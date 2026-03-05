@@ -1,0 +1,1 @@
+export {default as EditNews} from "./ui/edit-news";

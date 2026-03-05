@@ -1,0 +1,1 @@
+import { default as NewsFeed } from './ui/news-feed';

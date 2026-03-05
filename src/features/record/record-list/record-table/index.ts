@@ -1,0 +1,1 @@
+export { default as RecordTable } from "./ui/record-table";

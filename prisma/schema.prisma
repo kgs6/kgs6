@@ -1,0 +1,178 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model SiteSettings {
+  id          String   @id @default(uuid())
+  companyName String
+  siteTitle   String
+  address     String?
+  phone       String?
+  email       String?
+  mapsUrl     String?
+  description String?  
+  imageUrl    String?
+  routes      Route[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Route {
+  id          String   @id @default(uuid())
+  siteId      String
+  site        SiteSettings @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  path        String   @unique
+  title       String
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model RefreshToken {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  tokenHash String    @unique
+  revokedAt DateTime?
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  name          String?
+  password      String
+  role          Role           @default(USER)
+  createdAt     DateTime       @default(now())
+  refreshTokens RefreshToken[]
+}
+
+enum SectionType {
+  SPECIAL
+  REGULAR
+  OTHER
+}
+
+enum AttachmentType {
+  PDF
+  XML
+  ZIP
+  P7S
+  OTHER
+}
+
+model Year {
+  id        String    @id @default(uuid())
+  year      Int       @unique
+  isActive  Boolean   @default(true)
+  sections  Section[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Section {
+  id        String      @id @default(uuid())
+  yearId    String
+  year      Year        @relation(fields: [yearId], references: [id], onDelete: Cascade)
+  type      SectionType
+  title     String
+  name      String
+  orderNo   Int
+  isActive  Boolean     @default(true)
+  entries   Entry[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([yearId, orderNo])
+}
+
+model Entry {
+  id        String  @id @default(uuid())
+  sectionId String
+  section   Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  title       String
+  publishedAt DateTime
+  description String?
+  orderNo     Int      @default(0)
+  isActive    Boolean  @default(false)
+
+  attachments Attachment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sectionId, publishedAt])
+  @@index([sectionId, orderNo])
+}
+
+model News {
+  id        String  @id @default(uuid())
+  title     String
+  description String?
+  publishedAt DateTime
+  isActive    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Attachment {
+  id      String @id @default(uuid())
+  entryId String
+  entry   Entry  @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+  type   AttachmentType @default(OTHER)
+  signed Boolean        @default(false)
+
+  isActive Boolean @default(true)
+
+  url      String
+  fileName String?
+  fileSize Int?
+
+  orderNo   Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([entryId, orderNo])
+}
+
+model Object {
+  id          String       @id @default(uuid())
+  name        String
+  description String?
+  isActive    Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+
+  image       ObjectIMG?   
+}
+
+model ObjectIMG {
+  id        String   @id @default(uuid())
+  url       String
+  fileName  String?
+  fileSize  Int?
+  createdAt DateTime @default(now())
+
+  objectId  String   @unique
+  object    Object   @relation(fields: [objectId], references: [id], onDelete: Cascade)
+}
+
+

@@ -1,0 +1,1 @@
+export { default as UploadObjectImage } from "./ui/upload-object-image";

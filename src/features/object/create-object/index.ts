@@ -1,0 +1,1 @@
+export {default as CreateObject} from "./ui/create-object";

@@ -1,0 +1,1 @@
+export {default as AdminTableSkeleton} from "./ui/admin-table-skeleton";

@@ -1,0 +1,1 @@
+export {default as ContactsFeed} from "./ui/contacts-feed";

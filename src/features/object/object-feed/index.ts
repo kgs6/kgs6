@@ -1,0 +1,1 @@
+export {default as ObjectFeed} from './ui/object-feed';

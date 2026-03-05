@@ -1,0 +1,1 @@
+export {default as CreateNews} from './ui/create-news';
