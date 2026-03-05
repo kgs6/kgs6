@@ -1,0 +1,1 @@
+export {default as AboutSettings} from "./ui/about-settings"

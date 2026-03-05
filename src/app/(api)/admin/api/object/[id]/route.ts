@@ -3,6 +3,7 @@ import isUUID from '@/shared/lib/isUUID';
 import { writeFile, mkdir, unlink } from 'fs/promises';
 import { prisma } from '@/shared/lib/prisma';
 import { join } from 'path';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function PATCH(
   request: Request,
@@ -162,26 +163,29 @@ export async function PUT(
       const bytes = await imageFile.arrayBuffer();
       const buffer = Buffer.from(bytes);
 
-      const uniqueFileName = `${Date.now()}-${imageFile.name}`;
-      const newRelativePath = `/images/${uniqueFileName}`;
-      const absolutePath = join(process.cwd(), 'public', newRelativePath);
+      // Генерируем уникальное имя файла
+      const uniqueFileName = `${uuidv4()}-${imageFile.name}`;
 
-      await mkdir(join(process.cwd(), 'public/images'), {
-        recursive: true,
-      });
+      // Новая директория для хранения логотипов
+      const uploadDir = join(process.cwd(), 'uploads', 'images');
+      await mkdir(uploadDir, { recursive: true });
 
-      await writeFile(absolutePath, buffer);
+      // Путь до файла
+      const filePath = join(uploadDir, uniqueFileName);
+
+      // Сохраняем файл
+      await writeFile(filePath, buffer);
 
       imageUpdateData = {
         image: {
           upsert: {
             create: {
-              url: newRelativePath,
+              url: `/api/uploads/images/${uniqueFileName}`,
               fileName: imageFile.name,
               fileSize: imageFile.size,
             },
             update: {
-              url: newRelativePath,
+              url: `/api/uploads/images/${uniqueFileName}`,
               fileName: imageFile.name,
               fileSize: imageFile.size,
             },

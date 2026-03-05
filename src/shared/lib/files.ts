@@ -1,10 +1,8 @@
 import fs from "fs";
 import path from "path";
-import { v4 as uuidv4 } from "uuid";
 import { prisma } from "@/shared/lib/prisma";
-import {AttachmentType} from "@/generated/prisma/enums";
+import { AttachmentType } from "@/generated/prisma/enums";
 import { AdminExistingFileDTO } from "@/entities/file";
-
 
 export async function syncEntryFiles(
   entryId: string,
@@ -21,7 +19,7 @@ export async function syncEntryFiles(
     where: { entryId },
   });
 
-  // * SOFT Delete files that are in DB but not in existingFiles
+  // * Delete removed files
   const filesToDelete = dbFiles.filter(
     dbFile => !existingFiles.some(f => f.id === dbFile.id)
   );
@@ -36,8 +34,7 @@ export async function syncEntryFiles(
     });
   }
 
-  // * Update existing files that are in both DB and existingFiles
-  // * (in case of changes in orderNo or other metadata)
+  // * Update existing files
   for (const file of existingFiles) {
     await prisma.attachment.update({
       where: { id: file.id },
@@ -51,12 +48,8 @@ export async function syncEntryFiles(
     });
   }
 
-  // * New files from frontend
-  const uploadDir = path.join(
-    process.cwd(),
-    "public/uploads",
-    entryId
-  );
+  // * Directory like in your API
+  const uploadDir = path.join(process.cwd(), "uploads", "files");
 
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
@@ -73,18 +66,16 @@ export async function syncEntryFiles(
   for (let i = 0; i < newFiles.length; i++) {
     const file = newFiles[i];
 
-    const fileName = `${uuidv4()}-${file.name}`;
-
-    const filePath = path.join(uploadDir, fileName);
+    const uniqueFileName = `${Date.now()}-${file.name}`;
+    const filePath = path.join(uploadDir, uniqueFileName);
 
     const buffer = Buffer.from(await file.arrayBuffer());
-
     fs.writeFileSync(filePath, buffer);
 
     await prisma.attachment.create({
       data: {
         entryId,
-        url: `/uploads/${entryId}/${fileName}`,
+        url: `/api/uploads/files/${uniqueFileName}`,
         fileName: file.name,
         fileSize: file.size,
         orderNo: existingFiles.length + i + 1,

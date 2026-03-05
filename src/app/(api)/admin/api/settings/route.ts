@@ -46,7 +46,8 @@ export async function PATCH(request: Request) {
       const bytes = await logo.arrayBuffer();
       const buffer = Buffer.from(bytes);
 
-      const uploadDir = join(process.cwd(), "public", "logo");
+      // сохраняем в uploads/logo, не в public
+      const uploadDir = join(process.cwd(), "uploads", "logo");
       await mkdir(uploadDir, { recursive: true });
 
       const fileName = `${Date.now()}-${logo.name}`;
@@ -54,7 +55,8 @@ export async function PATCH(request: Request) {
 
       await writeFile(filePath, buffer);
 
-      imageUrl = `/logo/${fileName}`;
+      // путь, который будет использоваться на фронте через API route
+      imageUrl = `/api/uploads/logo/${fileName}`;
     } else if (typeof logo === "string") {
       // если пустая строка пришла — обнуляем путь
       if (logo === "") {

@@ -31,7 +31,7 @@ export default function BrandingSettings({ settings }: BrandingSettingsProps) {
   // ? If the URL has been updated
   (initialLogoUrl && logo?.url && logo.url !== initialLogoUrl);
 
-  const form = useBrandingSettingsForm(settings.companyName, settings.description, settings.siteTitle);
+  const form = useBrandingSettingsForm(settings.companyName, settings.siteTitle);
   const isDirty = form.formState.isDirty || isLogoDirty;
   const [updateSettings, { isLoading }] = useUpdateSettingsMutation();
 
@@ -40,7 +40,6 @@ export default function BrandingSettings({ settings }: BrandingSettingsProps) {
       console.log(data, logo);
       const formData = new FormData();
       formData.append("companyName", data.companyName);
-      formData.append("description", data.description);
       formData.append("siteTitle", data.siteTitle);
       formData.append("logo", logo?.file || logo?.url || "");
 
@@ -78,16 +77,6 @@ export default function BrandingSettings({ settings }: BrandingSettingsProps) {
             render={({ field }) => (
               <Field>
                 <FieldLabel>Назва компанії</FieldLabel>
-                <Input {...field} placeholder="Введіть..." />
-              </Field>
-            )}
-          />
-          <Controller
-            name="description"
-            control={form.control}
-            render={({ field }) => (
-              <Field>
-                <FieldLabel>Опис</FieldLabel>
                 <Input {...field} placeholder="Введіть..." />
               </Field>
             )}
