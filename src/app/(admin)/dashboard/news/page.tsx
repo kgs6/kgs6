@@ -8,7 +8,7 @@ function NewsPage() {
       <AdminPageHeader
         title={"Новини"}
         backUrl={ADMIN_PAGES.DASHBOARD}
-        forwardAction={{url: ADMIN_PAGES.CREATE_NEWS, label: "Створити новини"}}
+        forwardAction={{url: ADMIN_PAGES.CREATE_NEWS, label: "Створити новину"}}
       />
       <NewsList/>
     </div>

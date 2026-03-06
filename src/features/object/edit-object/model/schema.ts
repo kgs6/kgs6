@@ -9,12 +9,12 @@ export const editObjectSchema = z.object({
 
 export type EditObjectFormValues = z.infer<typeof editObjectSchema>;
 
-export const useEditObjectForm = () => {
+export const useEditObjectForm = (name: string, description: string) => {
   return useForm({
     resolver: zodResolver(editObjectSchema),
     defaultValues: {
-      name: "",
-      description: "",
+      name: name || "",
+      description: description || "",
     }
   });
 }

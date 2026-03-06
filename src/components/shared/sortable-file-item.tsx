@@ -8,7 +8,6 @@ import { Input } from "../ui/input";
 import { getFileType } from "@/shared/lib/get-file-type";
 import FileIcon from "./file-icon";
 import DeletionAlert from "@/components/shared/deletion-alert";
-import {remove} from "effect/TMap";
 
 export default function SortableFileItem({
   file,

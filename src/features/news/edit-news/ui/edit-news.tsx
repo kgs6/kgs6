@@ -1,8 +1,7 @@
 "use client";
 
 import {NewsEditValues, useEditNewsForm} from "@/features/news/edit-news/model/schema";
-import {useParams} from "next/navigation";
-import {NewsEditDTO, useGetNewsByIdQuery, useUpdateNewsMutation} from "@/entities/news";
+import {NewsDTO, NewsEditDTO, useUpdateNewsMutation} from "@/entities/news";
 import toast from "react-hot-toast";
 import {getErrorMessage} from "@/shared/lib/get-error-message";
 import {Field, FieldGroup, FieldLabel} from "@/components/ui/field";
@@ -12,27 +11,15 @@ import {Textarea} from "@/components/ui/textarea";
 import DatePicker from "@/components/shared/date-picker";
 import {Button} from "@/components/ui/button";
 import {Loader} from "lucide-react";
-import {useEffect} from "react";
 
-export default function EditNews() {
-  const params = useParams();
-  const newsId = params.id as string;
-  const form = useEditNewsForm();
+interface EditNewsProps {
+  news: NewsDTO,
+}
+
+export default function EditNews({news}: EditNewsProps) {
+  const form = useEditNewsForm(news.title, news.description);
   const {isDirty} = form.formState;
-  const {data: newsData, isLoading: isLoadingNews} = useGetNewsByIdQuery(newsId ?? "", {
-    skip: !newsId,
-  });
   const [updateNews, {isLoading: isUpdatingNews}] = useUpdateNewsMutation();
-
-  useEffect(() => {
-    if (newsData) {
-      form.reset({
-        title: newsData.title,
-        description: newsData.description,
-        publishedAt: newsData.publishedAt,
-      });
-    }
-  }, [newsData, form]);
 
   const onSubmit = async (data: NewsEditValues) => {
     try {
@@ -43,10 +30,9 @@ export default function EditNews() {
       }
 
       await updateNews({
-        id: newsId,
+        id: news.id,
         data: editedNews,
       }).unwrap();
-
 
       toast.success("Новина успішно створена");
       form.reset();
@@ -73,7 +59,7 @@ export default function EditNews() {
                 <FieldLabel>Заголовок</FieldLabel>
                 <Input
                   {...field}
-                  disabled={isLoadingNews}
+                  disabled={isUpdatingNews}
                   placeholder={"Введіть..."}
                   aria-invalid={fieldState.invalid}
                 />
@@ -90,10 +76,10 @@ export default function EditNews() {
                 <FieldLabel>Опис</FieldLabel>
                 <Textarea
                   {...field}
-                  disabled={isLoadingNews}
+                  disabled={isUpdatingNews}
                   placeholder={"Введіть..."}
                   aria-invalid={fieldState.invalid}
-                  rows={6}
+                  className={"h-64"}
                 />
               </Field>
             )}
@@ -115,9 +101,9 @@ export default function EditNews() {
           />
 
           <div className={"w-full md:flex md:justify-end"}>
-            <Button type="submit" disabled={isLoadingNews || !isDirty || isUpdatingNews}
+            <Button type="submit" disabled={isUpdatingNews || !isDirty || isUpdatingNews}
                     className={"mt-4 w-full md:w-auto"}>
-              {isLoadingNews || isUpdatingNews && <Loader className="animate-spin"/>}
+              {isUpdatingNews || isUpdatingNews && <Loader className="animate-spin"/>}
               Зберегти
             </Button>
           </div>

@@ -3,15 +3,13 @@ export function getFileType(fileName: string): { type: string; isSigned: boolean
   const lower = fileName.toLowerCase();
   let isSigned = false;
 
-  // Найдем все .p7s в конце, учитывая варианты типа .p7s-2, .p7s-3 и т.д.
-  const p7sRegex = /\.p7s(-\d+)?$/;
+  const p7sRegex = /\.p7s(\-\d+)?(?:\s*\(\d+\))?$/;
   let name = lower;
   while (p7sRegex.test(name)) {
     isSigned = true;
-    name = name.replace(p7sRegex, ""); // убираем последний .p7s или .p7s-2
+    name = name.replace(p7sRegex, "");
   }
 
-  // Определяем основной тип
   const dotIndex = name.lastIndexOf(".");
   const ext = dotIndex !== -1 ? name.slice(dotIndex + 1) : "";
 

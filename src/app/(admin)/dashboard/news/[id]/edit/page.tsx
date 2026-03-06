@@ -1,7 +1,6 @@
-import {EditNews} from "@/features/news/edit-news";
 import {ADMIN_PAGES} from "@/shared/config/pages.config";
 import {AdminEndPageHeader} from "@/widgets/admin-page-header";
-
+import EditNewsWidget from "@/widgets/edit-news-widget/edit-news-widget";
 
 export default function Page() {
   return (
@@ -10,7 +9,7 @@ export default function Page() {
         title={"Редагування новини"}
         backUrl={ADMIN_PAGES.NEWS}
       />
-      <EditNews />
+      <EditNewsWidget />
     </div>
   )
 }

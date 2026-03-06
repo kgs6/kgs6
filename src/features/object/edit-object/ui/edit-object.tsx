@@ -8,40 +8,35 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { UploadObjectImage } from "../../upload-object-image";
-import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FileItem } from "@/entities/file/model/types";
 import { EditObjectFormValues, useEditObjectForm } from "../model/schema";
-import { useGetObjectByIdQuery, useUpdateObjectMutation } from "@/entities/object/api/object-admin-api";
+import { useUpdateObjectMutation } from "@/entities/object/api/object-admin-api";
 import { Loader } from "lucide-react";
+import { ObjectDTO } from "@/entities/object";
+
+interface EditObjectProps {
+  object: ObjectDTO
+}
 
 
-export default function EditObject() {
-  const params = useParams();
-  const obejctId = params.id as string;
+export default function EditObject({object}: EditObjectProps) {
   const [image, setImage] = useState<FileItem | null>(null);
-  const form = useEditObjectForm();
-  const { data: objectData, isLoading } = useGetObjectByIdQuery(obejctId);
+  const form = useEditObjectForm(object.name, object.description);
   const [updateObject, { isLoading: isUpdating }] = useUpdateObjectMutation();
-
 
   useEffect(() => {
     const setDefaultValues = () => {
-      if (!objectData) return;
+      if (!object) return;
 
-      form.reset({
-        name: objectData.name,
-        description: objectData.description || "",
-      });
-
-      if (objectData.image && !image) {
+      if (object.image && !image) {
         setImage(prev => {
-          if (!prev && objectData.image) {
+          if (!prev && object.image) {
             return {
               id: 1,
-              url: objectData.image.url,
-              name: objectData.image.fileName,
-              size: objectData.image.fileSize,
+              url: object.image.url,
+              name: object.image.fileName,
+              size: object.image.fileSize,
               type: "image",
               orderNo: 0,
             };
@@ -58,7 +53,7 @@ export default function EditObject() {
     // ! because after update or delete, image will be null, 
     // ! and useEffect will set it again with objectData.image
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [objectData, form]);
+  }, [object, form]);
 
   const onSubmit = async (data: EditObjectFormValues) => {
     console.log("Form data:", data);
@@ -72,10 +67,10 @@ export default function EditObject() {
       if (image?.file)
         formData.append("image", image.file, image.name);
 
-      if (!image && objectData?.image)
+      if (!image && object?.image)
         formData.append("removeImage", "true");
 
-      await updateObject({ id: obejctId, data: formData }).unwrap();
+      await updateObject({ id: object.id, data: formData }).unwrap();
 
       toast.success("Об'єкт успішно оновлено");
     } catch (error: unknown) {
@@ -102,7 +97,7 @@ export default function EditObject() {
                 <FieldLabel>Назва об`єкта</FieldLabel>
                 <Input
                   {...field}
-                  disabled={isLoading || isUpdating}
+                  disabled={isUpdating}
                   placeholder={"Введіть..."}
                   aria-invalid={fieldState.invalid}
                 />
@@ -120,10 +115,10 @@ export default function EditObject() {
                 <FieldLabel>Опис</FieldLabel>
                 <Textarea
                   {...field}
-                  disabled={isLoading || isUpdating}
+                  disabled={isUpdating}
                   placeholder={"Введіть..."}
                   aria-invalid={fieldState.invalid}
-                  rows={6}
+                  className={"h-64"}
                 />
               </Field>
             )}
@@ -132,8 +127,8 @@ export default function EditObject() {
           <UploadObjectImage files={image} setFiles={setImage} />
 
           <div className={"w-full md:flex md:justify-end"}>
-            <Button type="submit" className={"mt-4 w-full md:w-auto"} disabled={isLoading || isUpdating}>
-              {isLoading || isUpdating ? <Loader className="animate-spin" /> : null}
+            <Button type="submit" className={"mt-4 w-full md:w-auto"} disabled={ isUpdating}>
+              { isUpdating ? <Loader className="animate-spin" /> : null}
               Зберегти
             </Button>
           </div>

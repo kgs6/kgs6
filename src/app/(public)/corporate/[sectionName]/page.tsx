@@ -1,6 +1,6 @@
 "use client";
 
-import React, {useState, useEffect} from 'react';
+// import React, {useState, useEffect} from 'react';
 import {usePathname} from "next/navigation";
 import {useGetAllYearsQuery, useGetYearByNumberQuery} from "@/store/api/public-api";
 
@@ -17,28 +17,28 @@ export default function StockInfoPage() {
   const {data: yearsList, isLoading: isListLoading} = useGetAllYearsQuery();
   const {data: yearData, isLoading: isContentLoading} = useGetYearByNumberQuery(parseInt(yearFromPath));
 
-  const [activeOrderNo, setActiveOrderNo] = useState<number>(1);
+  // const [activeOrder, setActiveOrderNo] = useState<number>(1);
 
-  useEffect(() => {
-    if (!yearData?.sections) return;
+  // useEffect(() => {
+  //   if (!yearData?.sections) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const id = entry.target.id.replace('section-', '');
-            setActiveOrderNo(parseInt(id));
-          }
-        });
-      },
-      {rootMargin: "-20% 0% -70% 0%", threshold: 0}
-    );
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       entries.forEach((entry) => {
+  //         if (entry.isIntersecting) {
+  //           const id = entry.target.id.replace('section-', '');
+  //           setActiveOrderNo(parseInt(id));
+  //         }
+  //       });
+  //     },
+  //     {rootMargin: "-20% 0% -70% 0%", threshold: 0}
+  //   );
 
-    const elements = document.querySelectorAll('section[id^="section-"]');
-    elements.forEach((el) => observer.observe(el));
+  //   const elements = document.querySelectorAll('section[id^="section-"]');
+  //   elements.forEach((el) => observer.observe(el));
 
-    return () => observer.disconnect();
-  }, [yearData]);
+  //   return () => observer.disconnect();
+  // }, [yearData]);
 
   if (isListLoading) return <div className="p-10 text-center">Завантаження...</div>;
 

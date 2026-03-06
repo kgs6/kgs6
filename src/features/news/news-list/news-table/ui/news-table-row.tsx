@@ -19,14 +19,13 @@ interface NewsTableRowProps {
 
 export default function NewsTableRow({news}: NewsTableRowProps) {
   const router = useRouter();
-  const [deleteNews, {isLoading}] = useDeleteNewsMutation();
-  const [toggleNewsActive] = useToggleNewsActiveMutation();
+  const [deleteNews, {isLoading: isLoadingDeleting}] = useDeleteNewsMutation();
+  const [toggleNewsActive, {isLoading: isLoadingActivity}] = useToggleNewsActiveMutation();
   const isMobile = useIsMobile();
-
 
   const handleDelete = async () => {
     try {
-      await deleteNews(news.id);
+      await deleteNews(news.id).unwrap();
 
       toast.success(`Новина "${news.title}" успішно видалена`);
     } catch (error: unknown) {
@@ -38,7 +37,7 @@ export default function NewsTableRow({news}: NewsTableRowProps) {
 
   const handleToggleActive = async () => {
     try {
-      await toggleNewsActive(news.id);
+      await toggleNewsActive(news.id).unwrap();
 
       toast.success(`Новина "${news.title}" ${news.isActive ? "приховано" : "опубліковано"}`);
     } catch (error: unknown) {
@@ -66,6 +65,7 @@ export default function NewsTableRow({news}: NewsTableRowProps) {
           isActive={news.isActive}
           handleToggleActive={handleToggleActive}
           isIconOnly={true}
+          isLoading={isLoadingActivity}
         />
         <Button
           size={isMobile ? "icon-lg" : "icon" }
@@ -74,7 +74,7 @@ export default function NewsTableRow({news}: NewsTableRowProps) {
           <Pencil className="h-4 w-4"/>
         </Button>
         <DeletionAlert
-          isDeleting={isLoading}
+          isDeleting={isLoadingDeleting}
           alertTitle={`Ви впевнені, що хочете видалити новину "${news.title}"?`}
           alertDescription={"Ця дія не може бути скасована."}
           onDelete={handleDelete}

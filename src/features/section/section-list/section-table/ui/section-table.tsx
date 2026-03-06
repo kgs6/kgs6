@@ -16,7 +16,6 @@ import {arrayMove, SortableContext, verticalListSortingStrategy} from "@dnd-kit/
 import toast from "react-hot-toast";
 import {useUpdateSectionsOrderMutation} from "@/entities/section/api/section-admin-api";
 import {useEffect, useState} from "react";
-import {getErrorMessage} from "@/shared/lib/get-error-message";
 
 interface SectionTableProps {
   sections: SectionDTO[]
@@ -51,7 +50,7 @@ export default function SectionTable({sections, allowReorder}: SectionTableProps
     try {
       await updateSectionsOrder(orderArray).unwrap();
       toast.success("Порядок оновлено");
-    } catch (e) {
+    } catch {
       setItems(sections);
       toast.error("Помилка при збереженні");
     }

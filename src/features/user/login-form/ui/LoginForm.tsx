@@ -8,7 +8,6 @@ import {Controller} from "react-hook-form";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {Loader} from "lucide-react";
-import React from "react";
 import {useRouter} from "next/navigation";
 import {ADMIN_PAGES} from "@/shared/config/pages.config";
 import {useLoginMutation} from "@/entities/user/api/user-api";

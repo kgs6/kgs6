@@ -20,7 +20,7 @@ export const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, Fetch
     if (url?.includes("/auth/refresh-token")) return result;
 
     if (result.error?.status === 401) {
-      const alreadyRetried = (extraOptions as any)?._retry;
+      const alreadyRetried = (extraOptions as any)._retry;
       if (alreadyRetried) {
         redirectToLogin();
         return result;

@@ -22,8 +22,8 @@ interface ObjectTableRowProps {
 
 export default function ObjectTableRow({ object }: ObjectTableRowProps) {
   const isMobile = useIsMobile();
-  const [toggleObjectActive] = useToggleObjectActiveMutation();
-  const [deleteObject] = useDeleteObjectMutation();
+  const [toggleObjectActive, {isLoading: isLoadingActivity}] = useToggleObjectActiveMutation();
+  const [deleteObject, {isLoading: isLoadingDeletion}] = useDeleteObjectMutation();
 
 
   const handleDelete = async () => {
@@ -97,6 +97,7 @@ export default function ObjectTableRow({ object }: ObjectTableRowProps) {
             isActive={object.isActive}
             handleToggleActive={handleToggleActive}
             isIconOnly={true}
+            isLoading={isLoadingActivity}
           />
           <Link href={ADMIN_PAGES.EDIT_OBJECTS(object.id)}>
             <Button
@@ -110,6 +111,7 @@ export default function ObjectTableRow({ object }: ObjectTableRowProps) {
             alertDescription={"Ця дія не може бути скасована."}
             onDelete={handleDelete}
             isIconButton={true}
+            isDeleting={isLoadingDeletion}
           />
         </div>
       </TableCell>

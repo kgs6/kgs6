@@ -1,17 +1,11 @@
-"use client";
-
-import React from 'react';
 import SectionDTO from "@/types/DTOs/public/section-dto";
 import { RecordCard } from "./record-card";
-import {useRouter} from "next/navigation";
 
 interface MainInfoProps {
   sections: SectionDTO[];
 }
 
 export default function MainInfo({ sections }: MainInfoProps) {
-
-
   return (
     <div>
       {sections.map((section) => (

@@ -50,7 +50,7 @@ export default function CreateObject() {
 
 
   return (
-     <div className={"w-full"}>
+     <div className={"w-full mt-4"}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
       >

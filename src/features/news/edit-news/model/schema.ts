@@ -10,12 +10,12 @@ export const newsEditSchema = z.object({
 
 export type NewsEditValues = z.infer<typeof newsEditSchema>;
 
-export const useEditNewsForm = () => {
+export const useEditNewsForm = (title: string | undefined, description: string | undefined) => {
   return useForm<NewsEditValues>({
     resolver: zodResolver(newsEditSchema),
     defaultValues: {
-      title: "",
-      description: "",
+      title: title || "",
+      description: description || "",
       publishedAt: new Date().toISOString(),
     }
   });

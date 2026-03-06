@@ -14,7 +14,7 @@ export default function ObjectItem({ object }: ObjectItemProps) {
           className="w-full aspect-video md:h-64 rounded-md"
           src={object.image.url}
           alt={object.name}
-          height={500}
+          height={300}
           width={400}
           priority
         />

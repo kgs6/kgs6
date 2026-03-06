@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Upload, X, ImageIcon } from "lucide-react";
 import { FileItem } from "@/entities/file/model/types";
 import { toast } from "react-hot-toast";
+import Image from "next/image";
 
 interface UploadObjectImageProps {
   files: FileItem | null;
@@ -105,10 +106,12 @@ export default function UploadObjectImage({ files, setFiles }: UploadObjectImage
             <div className="w-full lg:w-74 shrink-0">
               <div className="relative overflow-hidden rounded-lg border bg-muted flex items-center justify-center">
                 {previewUrl ? (
-                  <img
+                  <Image
                     src={previewUrl}
                     alt="Preview"
                     className="w-full h-full object-cover"
+                    height={200}
+                    width={200}
                   />
                 ) : (
                   <ImageIcon className="text-muted-foreground opacity-20" size={40} />

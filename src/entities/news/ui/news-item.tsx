@@ -1,5 +1,4 @@
 import {NewsPublicDTO} from "@/entities/news";
-import React from "react";
 
 interface NewsItemProps {
   news: NewsPublicDTO

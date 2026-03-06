@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { X, Upload } from "lucide-react";
+import Image from "next/image";
 
 export interface LogoImage {
   file?: File;
@@ -17,7 +18,6 @@ export default function LogoUploader({ logo, setLogo }: LogoUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSelect = (file: File) => {
-    // если выбираем файл — убираем url
     setLogo({ file });
   };
 
@@ -40,10 +40,12 @@ export default function LogoUploader({ logo, setLogo }: LogoUploaderProps) {
       >
         {previewUrl ? (
           <>
-            <img
+            <Image
               src={previewUrl}
               alt="Logo preview"
               className="w-full h-full object-cover"
+              width={100}
+              height={100}
             />
 
             <button

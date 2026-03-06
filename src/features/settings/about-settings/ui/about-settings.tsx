@@ -9,11 +9,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { useUpdateSettingsMutation } from "@/entities/settings/api/settings-admin-api";
 import { Loader } from "lucide-react";
 
-
 interface AboutSettingsProps {
   settings: SettingsAdminDTO
 }
-
 
 export default function AboutSettings({ settings }: AboutSettingsProps) {
   const form = useAboutSettingsForm(settings.description);

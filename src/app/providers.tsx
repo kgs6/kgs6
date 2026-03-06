@@ -1,8 +1,8 @@
 "use client";
 
 import { Provider } from "react-redux";
-import { store } from "@/store/store";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { store } from "@/store/store";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (

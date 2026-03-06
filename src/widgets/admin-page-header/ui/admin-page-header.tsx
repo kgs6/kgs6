@@ -1,9 +1,9 @@
-"use client"
+'use client';
 
-import React, {ReactNode} from 'react';
-import {useRouter} from "next/navigation";
-import {Button} from "@/components/ui/button";
-import {ArrowLeft, Plus} from "lucide-react";
+import { Button } from '@/components/ui/button';
+import { ArrowLeft, Plus } from 'lucide-react';
+import Link from 'next/link';
+import { ReactNode } from 'react';
 
 interface AdminPageHeaderProps {
   title: string;
@@ -15,32 +15,33 @@ interface AdminPageHeaderProps {
   };
 }
 
-export default function AdminPageHeader({title, backUrl, actionButton, forwardAction}: AdminPageHeaderProps) {
-  const router = useRouter();
-
+export default function AdminPageHeader({
+  title,
+  backUrl,
+  actionButton,
+  forwardAction,
+}: AdminPageHeaderProps) {
   return (
-    <header className={"flex items-center justify-between"}>
-      <Button variant={"ghost"} onClick={() => {
-        router.push(backUrl)
-      }}>
-        <ArrowLeft/>
-        Назад
-      </Button>
+    <header className={'flex items-center justify-between'}>
+      <Link href={backUrl}>
+        <Button variant={'ghost'}>
+          <ArrowLeft />
+          Назад
+        </Button>
+      </Link>
 
-      <h1 className={"hidden md:block text-2xl font-bold"}>
-        {title}
-      </h1>
+      <h1 className={'hidden md:block text-2xl font-bold'}>{title}</h1>
 
       {actionButton && actionButton}
 
       {forwardAction && (
-        <Button variant={"default"} onClick={() => {
-          router.push(forwardAction?.url)
-        }}>
-          <Plus />
-          {forwardAction?.label}
-        </Button>
+        <Link href={forwardAction.url}>
+          <Button variant={'default'}>
+            <Plus />
+            {forwardAction?.label}
+          </Button>
+        </Link>
       )}
     </header>
-  )
+  );
 }
