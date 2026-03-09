@@ -26,6 +26,6 @@ export const ADMIN_PAGES = {
 
 
   // ? Site settings
-  SETTINGS: "/settings",
+  SETTINGS: "/dashboard/settings",
 
 }

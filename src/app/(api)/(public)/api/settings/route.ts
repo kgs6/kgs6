@@ -1,10 +1,9 @@
 import { prisma } from "@/shared/lib/prisma";
 
-
-
 export async function GET() {
   try {
-    let settings = await prisma.siteSettings.findFirst({
+    const settings = await prisma.siteSettings.findFirst({
+      
       select: {
         siteTitle: true,
         companyName: true,
@@ -14,11 +13,18 @@ export async function GET() {
         phone: true,
         email: true,
         mapsUrl: true,
+        routes: {
+          where: { isActive: true },
+          select: {
+            title: true,
+            isActive: true,
+          },
+        },
       }
     });
 
     if (!settings) {
-      settings = await prisma.siteSettings.create({
+      const newSettings = await prisma.siteSettings.create({
         data: {
           companyName: "",
           siteTitle: "",
@@ -27,13 +33,39 @@ export async function GET() {
           email: "",
           address: "",
           mapsUrl: "",
+          routes: {
+            create: {
+              title: 'Спеціальна сторінка',
+              isActive: false,
+            },
+          }
+        },
+        select: {
+          siteTitle: true,
+          companyName: true,
+          description: true,
+          imageUrl: true,
+          address: true,
+          phone: true,
+          email: true,
+          mapsUrl: true,
+          routes: {
+            where: { isActive: true },
+            select: {
+              title: true,
+              isActive: true,
+            },
+          },
         }
-      })
+      });
+      
+      return Response.json(newSettings, { status: 200 });
     }
 
     return Response.json(settings, { status: 200 });
 
-  } catch {
+  } catch (error) {
+    console.error("Public API Error:", error);
     return Response.json("Помилка сервера", { status: 500 });
   }
 }

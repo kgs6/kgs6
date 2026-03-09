@@ -1,7 +1,7 @@
 'use client';
 
 import { useGetRecordByIdQuery } from '@/entities/record/api/record-admin-api';
-import { EditRecord } from '@/features/record/create-record';
+import { EditRecord, EditRecordSkeleton } from '@/features/record/create-record';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -22,15 +22,15 @@ export default function EditObjectWidget() {
     <div className="mt-4">
       <div
         className={`transition-opacity duration-500 ${
-          showContent ? 'opacity-0 pointer-events-none' : 'opacity-100'
+          showContent ? 'opacity-0 pointer-events-none hidden' : 'opacity-100'
         }`}
       >
-
+        <EditRecordSkeleton />
       </div>
 
       {record && (
         <div
-          className={`transition-opacity duration-500 top-0 left-0 w-full mb-4 ${
+          className={`mt-4 transition-opacity duration-500 top-0 left-0 w-full mb-4 ${
             showContent ? 'opacity-100' : 'opacity-0'
           }`}
         >

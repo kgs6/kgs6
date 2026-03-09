@@ -135,8 +135,9 @@ export default function EditRecord({ record }: EditRecordProps) {
                 <Textarea
                   {...field}
                   placeholder="Введіть..."
-                  rows={6}
+                  disabled
                   aria-invalid={fieldState.invalid}
+                  className="h-12"
                 />
               </Field>
             )}

@@ -1,45 +1,40 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import {
-  BookOpen,
-  Newspaper,
-  Hotel,
-  Settings
-} from "lucide-react"
+import * as React from 'react';
+import { BookOpen, Newspaper, Hotel, Settings } from 'lucide-react';
 
-import { NavMain } from "@/components/sidebar/nav-main"
-import { NavUser } from "@/components/sidebar/nav-user"
+import { NavMain } from '@/components/sidebar/nav-main';
+import { NavUser } from '@/components/sidebar/nav-user';
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { useAppSelector } from "@/store/hooks"
-import { ADMIN_PAGES } from "@/shared/config/pages.config"
-import { useGetYearQuery } from "@/entities/year/api/year-admin-api"
-import { NavSecondary } from "./nav-secondary"
-import Image from "next/image"
-import siteLogo from "@/../public/kgs-logo.jpeg"
+} from '@/components/ui/sidebar';
+import { useAppSelector } from '@/store/hooks';
+import { ADMIN_PAGES } from '@/shared/config/pages.config';
+import { useGetYearQuery } from '@/entities/year/api/year-admin-api';
+import { NavSecondary } from './nav-secondary';
+import Image from 'next/image';
+import { useGetSettingsQuery } from '@/entities/settings/api/settings-admin-api';
+
 
 const navData = {
   navMain: [
     {
-      title: "Новини",
+      title: 'Новини',
       url: ADMIN_PAGES.NEWS,
       icon: Newspaper,
     },
     {
-      title: "Обʼєкти",
+      title: 'Обʼєкти',
       url: ADMIN_PAGES.OBJECTS,
       icon: Hotel,
     },
     {
-      title: "Інформація для акціонерів та стейкхолдерів",
+      title: 'Інформація для акціонерів та стейкхолдерів',
       url: ADMIN_PAGES.YEARS,
       icon: BookOpen,
       items: [] as { title: string; url: string }[],
@@ -47,17 +42,18 @@ const navData = {
   ],
   navSecondary: [
     {
-      title: "Налаштування",
+      title: 'Налаштування',
       url: ADMIN_PAGES.SETTINGS,
-      icon: Settings
-    }
+      icon: Settings,
+    },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const user = useAppSelector((state) => state.auth.user)
+  const user = useAppSelector((state) => state.auth.user);
 
   const { data } = useGetYearQuery();
+  const { data: settings } = useGetSettingsQuery();
 
   React.useEffect(() => {
     if (data) {
@@ -69,30 +65,35 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   }, [data]);
 
   return (
-    <Sidebar
-      {...props}
-    >
+    <Sidebar {...props}>
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-              <a href={ADMIN_PAGES.DASHBOARD} className="flex items-center gap-2">
-                <div>
-                  <Image src={siteLogo} alt="Logo" width={32} height={32} />
-                </div>
-                
-                <span className="text-base font-semibold truncate">Приватне акціонерне товариство &quot;ТРЕСТ КИЇВМІСЬКБУД-6&quot;</span>
+        {settings && (
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <a
+                href={ADMIN_PAGES.DASHBOARD}
+                className="flex items-center gap-2"
+              >
+                {settings.imageUrl && (
+                  <div>
+                    <Image src={`${settings.imageUrl.toString()}`} alt="Logo" width={32} height={32} />
+                  </div>
+                )}
+
+                <span className="text-base font-semibold truncate">
+                  {settings.companyName}
+                </span>
               </a>
-          </SidebarMenuItem>
-        </SidebarMenu>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        )}
       </SidebarHeader>
 
       <SidebarContent className="flex flex-col justify-between">
         <NavMain items={navData.navMain} />
         <NavSecondary items={navData.navSecondary} />
       </SidebarContent>
-      <SidebarFooter>
-        {user ? <NavUser user={user} /> : null}
-      </SidebarFooter>
+      <SidebarFooter>{user ? <NavUser user={user} /> : null}</SidebarFooter>
     </Sidebar>
-  )
+  );
 }

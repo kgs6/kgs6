@@ -1,5 +1,6 @@
-import {baseAdminApi} from "@/shared/api";
+
 import {LoginDTO, UserDTO} from "@/entities/user/model/types";
+import { baseAdminApi } from "@/shared/api";
 
 export const userApi =
   baseAdminApi.injectEndpoints({

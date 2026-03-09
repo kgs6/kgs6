@@ -12,11 +12,8 @@ const montserrat = Montserrat({
 
 
 export const metadata: Metadata = {
-  title: "ПрАТ \"Трест Київміськбуд-6\"",
-  description: "Офіційний інтернет-сайт Приватного акціонерного товариства \"ТРЕСТ КИЇВМІСЬКБУД-6\"",
-  icons: {
-    icon: "/kgs-logo.png",
-  }
+  title: "Офіційний інтернет-сайт",
+  description: "Офіційний інтернет-сайт",
 };
 
 export default function RootLayout({

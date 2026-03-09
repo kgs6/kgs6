@@ -54,7 +54,7 @@ export default function CreateRecord() {
   }
 
   return (
-    <div className={"w-full"}>
+    <div className={"mt-4 w-full"}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
       >
@@ -86,7 +86,7 @@ export default function CreateRecord() {
                 <FieldLabel>Опис</FieldLabel>
                 <Textarea
                   {...field}
-                  // disabled={isLoading}
+                  disabled
                   placeholder={"Введіть..."}
                   aria-invalid={fieldState.invalid}
                   rows={6}

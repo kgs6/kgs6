@@ -1,17 +1,23 @@
-'use client';
-
 import { AuthBootstrap } from '@/components/shared/auth-boostrap';
 import { AppSidebar } from '@/components/sidebar/app-sidebar';
 import { SiteHeader } from '@/components/sidebar/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import { AnimatePresence, motion } from "framer-motion";
+import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
+import { PageAnimatePresence } from '@/components/shared/page-animate-presence';
 
-
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get('accessToken');
+
+  if (!token) {
+    redirect('/login');
+  }
+
   return (
     <div className="[--header-height:calc(--spacing(14))]">
       <AuthBootstrap />
@@ -29,15 +35,9 @@ export default function DashboardLayout({
           <div className="flex flex-1 flex-col">
             <div className="@container/main flex flex-1 flex-col gap-2">
               <div className="flex flex-col gap-4 p-4 md:gap-6 md:py-6">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
+                <PageAnimatePresence>
                     {children}
-                  </motion.div>
-                </AnimatePresence>
+                </PageAnimatePresence>
               </div>
             </div>
           </div>

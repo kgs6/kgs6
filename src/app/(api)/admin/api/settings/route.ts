@@ -1,43 +1,62 @@
-import { isAuthenticated } from "@/shared/lib/auth";
-import { prisma } from "@/shared/lib/prisma";
+import { isAuthenticated } from '@/shared/lib/auth';
+import { prisma } from '@/shared/lib/prisma';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 
 export async function GET() {
   if (!(await isAuthenticated()))
-    return Response.json("Помилка авторизації", { status: 401 });
+    return Response.json('Помилка авторизації', { status: 401 });
 
   try {
-    let settings = await prisma.siteSettings.findFirst();
+    let settings = await prisma.siteSettings.findFirst({
+      include: { routes: true },
+    });
 
     if (!settings) {
       settings = await prisma.siteSettings.create({
         data: {
-          companyName: "",
-          siteTitle: "",
-          description: "",
-          phone: "",
-          email: "",
-          address: "",
-          mapsUrl: "",
-        }
-      })
+          companyName: '',
+          siteTitle: '',
+          description: '',
+          phone: '',
+          email: '',
+          address: '',
+          mapsUrl: '',
+          routes: {
+            create: {
+              title: 'Головна',
+              isActive: false,
+            },
+          },
+        },
+        include: { routes: true },
+      });
+    }
+
+    if (settings.routes.length === 0) {
+      const defaultRoute = await prisma.route.create({
+        data: {
+          title: 'Головна',
+          isActive: false,
+          siteId: settings.id,
+        },
+      });
+      settings.routes = [defaultRoute];
     }
 
     return Response.json(settings, { status: 200 });
-
   } catch {
-    return Response.json("Помилка сервера", { status: 500 });
+    return Response.json('Помилка сервера', { status: 500 });
   }
 }
 
 export async function PATCH(request: Request) {
   if (!(await isAuthenticated()))
-    return Response.json("Помилка авторизації", { status: 401 });
+    return Response.json('Помилка авторизації', { status: 401 });
 
   try {
     const formData = await request.formData();
-    const logo = formData.get("logo");
+    const logo = formData.get('logo');
 
     let imageUrl: string | undefined = undefined;
 
@@ -47,7 +66,7 @@ export async function PATCH(request: Request) {
       const buffer = Buffer.from(bytes);
 
       // сохраняем в uploads/logo, не в public
-      const uploadDir = join(process.cwd(), "uploads", "logo");
+      const uploadDir = join(process.cwd(), 'uploads', 'logo');
       await mkdir(uploadDir, { recursive: true });
 
       const fileName = `${Date.now()}-${logo.name}`;
@@ -57,29 +76,37 @@ export async function PATCH(request: Request) {
 
       // путь, который будет использоваться на фронте через API route
       imageUrl = `/api/uploads/logo/${fileName}`;
-    } else if (typeof logo === "string") {
+    } else if (typeof logo === 'string') {
       // если пустая строка пришла — обнуляем путь
-      if (logo === "") {
-        imageUrl = "";
+      if (logo === '') {
+        imageUrl = '';
       }
       // иначе undefined — значит не обновляем
     }
 
     const settings = await prisma.siteSettings.findFirst();
     if (!settings) {
-      return Response.json("Налаштування не знайдені", { status: 404 });
+      return Response.json('Налаштування не знайдені', { status: 404 });
     }
 
     // ===== Собираем объект для обновления только с реально пришедшими ключами =====
     const dataToUpdate: Record<string, string | File> = {};
 
     // Проверяем каждый ключ: если есть в formData — добавляем в update
-    const keys = ["companyName", "description", "siteTitle", "address", "phone", "email", "mapsUrl"] as const;
+    const keys = [
+      'companyName',
+      'description',
+      'siteTitle',
+      'address',
+      'phone',
+      'email',
+      'mapsUrl',
+    ] as const;
 
     keys.forEach((key) => {
       if (formData.has(key)) {
         const value = formData.get(key);
-        dataToUpdate[key] = value ?? "";
+        dataToUpdate[key] = value ?? '';
       }
     });
 
@@ -93,9 +120,10 @@ export async function PATCH(request: Request) {
       data: dataToUpdate,
     });
 
+
     return Response.json(updatedSettings, { status: 200 });
   } catch (error) {
     console.error(error);
-    return Response.json("Помилка сервера", { status: 500 });
+    return Response.json('Помилка сервера', { status: 500 });
   }
 }

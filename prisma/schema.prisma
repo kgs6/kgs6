@@ -37,9 +37,8 @@ model Route {
   id          String   @id @default(uuid())
   siteId      String
   site        SiteSettings @relation(fields: [siteId], references: [id], onDelete: Cascade)
-  path        String   @unique
+  path        String?   @unique
   title       String
-  description String?
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

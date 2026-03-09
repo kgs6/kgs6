@@ -19,11 +19,11 @@ import { PAGES } from '@/shared/config/pages.config';
 import { Button } from '@/components/ui/button';
 import NavLink from '@/components/shared/header/nav-link';
 import { useGetPublicSettingsQuery } from '@/entities/settings/api/settings-public-api';
+import { useMemo } from 'react';
 
-const menuLinks = [
+const BASE_MENU_LINKS = [
   { href: PAGES.ABOUT, text: 'Про компанію' },
   { href: PAGES.NEWS, text: 'Новини' },
-  { href: PAGES.OBJECTS, text: 'Обʼєкти' },
   {
     href: PAGES.STOCK_INFO,
     text: 'Інформація для акціонерів та стейкхолдерів',
@@ -36,12 +36,30 @@ function Header() {
   const pathname = usePathname();
   const { data: settings } = useGetPublicSettingsQuery();
 
+  const menuLinks = useMemo(() => {
+    const links = [...BASE_MENU_LINKS];
+
+    if (settings?.routes && settings.routes.length > 0) {
+      const dynamicLink = { 
+        href: PAGES.OBJECTS, 
+        text: settings.routes[0].title 
+      };
+      
+      // Розраховуємо середину
+      const middleIndex = Math.floor(links.length / 2);
+      // Вставляємо в копію масиву
+      links.splice(middleIndex, 0, dynamicLink);
+    }
+
+    return links;
+  }, [settings]);
+
   return (
     <header className="sticky top-0 bg-background z-50 flex justify-between items-center px-10 py-4 w-full lg:max-w-7xl mx-auto">
       <div className="w-18.75 h-14 relative">
         {settings?.imageUrl && (
           <Image
-            src={`${settings.imageUrl.toString()}`}
+            src={`${settings.imageUrl}`}
             alt="KGS Logo"
             width={75} 
             height={75}

@@ -1,7 +1,7 @@
 import { BaseQueryFn, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
 
 const rawBaseQueryV2 = fetchBaseQuery({
-  baseUrl: "http://localhost:3000/admin/api",
+  baseUrl: `${process.env.NEXT_PUBLIC_APP_URL}/admin/api`,
   credentials: "include",
 });
 

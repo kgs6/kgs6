@@ -21,6 +21,15 @@ export const settingAdminApi = baseAdminApi.injectEndpoints({
       invalidatesTags: ["Settings"],
     }),
 
+    updateSettingsRoute: build.mutation<void, { routeId: string; routeTitle: string; routeIsActive: boolean }>({
+      query: (routeData) => ({
+        url: "/settings/routes",
+        method: "PATCH",
+        body: routeData,
+      }),
+      invalidatesTags: ["Settings"],
+    }),
+
 
   }),
 });
@@ -28,4 +37,5 @@ export const settingAdminApi = baseAdminApi.injectEndpoints({
 export const {
   useGetSettingsQuery,
   useUpdateSettingsMutation,
+  useUpdateSettingsRouteMutation
 } = settingAdminApi;

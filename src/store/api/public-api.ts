@@ -3,7 +3,7 @@ import {YearDTO} from "@/types/DTOs/public/year-dto";
 import {FullYearDTO} from "@/types/DTOs/public/full-year-dto";
 
 const publicBaseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:3000/api",
+  baseUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api`,
 });
 
 export const publicApi = createApi({

@@ -5,6 +5,7 @@ import { BrandingSettings, BrandingSettingsSkeleton } from "../../branding-setti
 import { ContactSettings } from "../../contact-settings";
 import ContactSettingsSkeleton from "../../contact-settings/ui/contact-settings-skeleton";
 import { AboutSettings } from "../../about-settings";
+import { RouteSettings } from "../../route-settings";
 
 
 export default function SettingsList() {
@@ -22,6 +23,8 @@ export default function SettingsList() {
           <BrandingSettings settings={settings} />
           <ContactSettings settings={settings} />
           <AboutSettings settings={settings} />
+          <RouteSettings settings={settings} />
+          <div className="h-64"/>
         </div>
       ) : (
         <p>Настройки не найдены</p>

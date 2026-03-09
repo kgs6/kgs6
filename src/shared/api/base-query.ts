@@ -1,5 +1,5 @@
-import {fetchBaseQuery} from "@reduxjs/toolkit/query/react";
+import { fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const rawBaseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:3000/api"
+  baseUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api`,
 });

@@ -15,7 +15,7 @@ export default function ObjectFeed() {
     <div className="min-h-screen flex flex-col">
       <header className={'mt-4'}>
         <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight mb-2 wrap-break-words">
-          Об&#39;єкти
+          {settings?.routes &&  settings.routes.length > 0 ? settings.routes[0].title : "" }
         </h1>
         {settings ? (
           <p className="sm:text-base text-muted-foreground">

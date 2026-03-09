@@ -8,6 +8,7 @@ export interface SettingsAdminDTO {
   email?: string
   mapsUrl?: string
   imageUrl?: string
+  routes: RoutesSettingsDTO[]
 }
 
 export interface SettingsPublicDTO {
@@ -19,6 +20,7 @@ export interface SettingsPublicDTO {
   email?: string
   mapsUrl?: string
   imageUrl?: string
+  routes: RoutesPublicSettingsDTO[]
 }
 
 export interface UpdateSettingsDTO {
@@ -34,4 +36,14 @@ export interface UpdateSettingsDTO {
 export interface LogoImage {
   file?: File
   url?: string
+}
+
+export interface RoutesSettingsDTO {
+  id: string
+  title: string
+  isActive: boolean
+}
+export interface RoutesPublicSettingsDTO {
+  title: string
+  isActive: boolean
 }

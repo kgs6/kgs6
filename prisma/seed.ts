@@ -11,11 +11,17 @@ async function main() {
 
   const adapter = new PrismaPg(pool);
   
-  const prisma = new PrismaClient({ adapter } as any);
+  const prisma = new PrismaClient({ adapter });
 
-  // ! Example CREDENTIALS (adminEmail, hashedPassword), change as needed
-  const adminEmail = "test@mail.com";
-  const hashedPassword = await bcrypt.hash("12345678", 10);
+  const adminEmail = process.env.BASE_ADMIN_EMAIL;
+  const adminPassword = process.env.BASE_ADMIN_PASSWORD;
+
+  if (!adminEmail || !adminPassword) {
+    console.error("❌ Seed error: Admin credentials not set in environment variables.");
+    process.exit(1);
+  }
+
+  const hashedPassword = await bcrypt.hash(adminPassword, 10);
 
   try {
     const admin = await prisma.user.upsert({
@@ -25,7 +31,7 @@ async function main() {
         email: adminEmail,
         name: "Super Admin",
         password: hashedPassword,
-        role: "ADMIN" as any,
+        role: "ADMIN",
       },
     });
 

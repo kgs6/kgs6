@@ -8,6 +8,7 @@ interface VisibilityButtonProps {
   handleToggleActive: () => void;
   isIconOnly?: boolean;
   isLoading: boolean;
+  className?: string;
 }
 
 const VisibilityButton = ({
@@ -15,6 +16,7 @@ const VisibilityButton = ({
   handleToggleActive,
   isIconOnly,
   isLoading,
+  className,
 }: VisibilityButtonProps) => {
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
@@ -23,7 +25,7 @@ const VisibilityButton = ({
   return (
     <Button
       variant="outline"
-      className="gap-2 flex items-center justify-center"
+      className={`${className || ""} gap-2 flex items-center justify-center`}
       onClick={handleToggleActive}
       size={isIconOnly ? buttonSize : "default"}
       disabled={isLoading}

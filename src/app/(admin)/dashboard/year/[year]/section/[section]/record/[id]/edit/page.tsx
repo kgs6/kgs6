@@ -12,7 +12,7 @@ export default function Page() {
   return (
     <div>
       <AdminEndPageHeader
-        title="Редагування обʼєкта"
+        title="Редагування запису"
         backUrl={ADMIN_PAGES.RECORDS(year, section)}
       />
       <EditRecordWidget />

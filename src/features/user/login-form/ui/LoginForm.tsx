@@ -23,14 +23,13 @@ export default function LoginForm() {
       await login({
         email: data.email,
         password: data.password,
-      });
+      }).unwrap();
 
       toast.success("Успішний вхід");
       router.push(ADMIN_PAGES.DASHBOARD);
     } catch (error: unknown) {
       const msg = getErrorMessage(error) || "Невідома помилка";
       toast.error(msg);
-      console.error(msg, error);
     }
   }
 
