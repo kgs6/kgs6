@@ -28,7 +28,7 @@ export default function SectionTableRow({ section, allowReorder }: SectionTableR
   const { setNodeRef, attributes, listeners, transform, transition } = useSortable({
     id: section.id,
   });
-  const [toggleSectionActive] = useToggleSectionActiveMutation();
+  const [toggleSectionActive, {isLoading: isToggleLoading}] = useToggleSectionActiveMutation();
   const [deleteSection] = useDeleteSectionMutation();
 
   const style = {
@@ -111,6 +111,7 @@ export default function SectionTableRow({ section, allowReorder }: SectionTableR
             isActive={section.isActive}
             handleToggleActive={() => handleToggleActive()}
             isIconOnly
+            isLoading={isToggleLoading}
           />
           <Link href={ADMIN_PAGES.RECORDS(year, section.name)} >
             <Button

@@ -20,7 +20,7 @@ interface YearsTableRowProps {
 
 export default function YearsTableRow({year}: YearsTableRowProps) {
   const [deleteYear, {isLoading}] = useDeleteYearMutation();
-  const [toggleYearActive] = useToggleYearActiveMutation();
+  const [toggleYearActive, {isLoading: isToggleLoading}] = useToggleYearActiveMutation();
   const isMobile = useIsMobile();
 
 
@@ -62,6 +62,7 @@ export default function YearsTableRow({year}: YearsTableRowProps) {
           isActive={year.isActive}
           handleToggleActive={handleToggleActive}
           isIconOnly={true}
+          isLoading={isToggleLoading}
         />
         <Link href={ADMIN_PAGES.SECTIONS(year.year.toString())}>
           <Button

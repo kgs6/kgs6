@@ -11,13 +11,13 @@ export const createRecordSchema = z.object({
 
 export type CreateRecordFormValues = z.infer<typeof createRecordSchema>;
 
-export const useCreateRecordForm = () => {
+export const useCreateRecordForm = (title: string, description: string, publishedAt: string) => {
   return useForm({
     resolver: zodResolver(createRecordSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      publishedAt: new Date().toISOString(),
+      title: title || "",
+      description: description || "",
+      publishedAt: publishedAt || new Date().toISOString(),
     }
   });
 }

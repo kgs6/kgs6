@@ -20,10 +20,10 @@ export default function NewsList() {
   }, [isLoading, news]);
 
   return (
-    <div className="mt-4 relative">
+    <div className="mt-4">
       <div
         className={`flex flex-col gap-5 transition-opacity duration-500 ${
-          showContent ? "opacity-0 pointer-events-none" : "opacity-100"
+          showContent ? "opacity-0 pointer-events-none hidden" : "opacity-100"
         }`}
       >
         <AdminFilterSkeleton />
@@ -32,7 +32,7 @@ export default function NewsList() {
 
       {news && (
         <div
-          className={`transition-opacity duration-500 absolute top-0 left-0 w-full ${
+          className={`transition-opacity duration-500 top-0 left-0 w-full ${
             showContent ? "opacity-100" : "opacity-0"
           }`}
         >

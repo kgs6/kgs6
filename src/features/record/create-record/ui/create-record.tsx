@@ -17,7 +17,7 @@ import { useCreateRecordMutation } from "@/entities/record/api/record-admin-api"
 export default function CreateRecord() {
   const { section } = useParams() as { section: string }
   const [files, setFiles] = useState<FileItem[]>([]);
-  const form = useCreateRecordForm();
+  const form = useCreateRecordForm("", "", "");
   const [createRecord] = useCreateRecordMutation();
 
   const onSubmit = async (data: CreateRecordFormValues) => {

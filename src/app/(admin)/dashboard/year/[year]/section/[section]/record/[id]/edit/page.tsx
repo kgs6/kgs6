@@ -1,20 +1,21 @@
 "use client";
-
-import { EditRecord } from "@/features/record/create-record";
-import { ADMIN_PAGES } from "@/shared/config/pages.config";
-import { AdminEndPageHeader } from "@/widgets/admin-page-header";
-import { useParams } from "next/navigation";
+import { ADMIN_PAGES } from '@/shared/config/pages.config';
+import { AdminEndPageHeader } from '@/widgets/admin-page-header';
+import EditRecordWidget from '@/widgets/edit-record-widget/edit-record-widget';
+import { useParams } from 'next/navigation';
 
 export default function Page() {
-  const { year, section } = useParams() as { year: string, section: string };
+  const params = useParams();
+  const year = params.year as string;
+  const section = params.section as string;
 
   return (
     <div>
-      <AdminEndPageHeader 
-        title="Редагувати запис"
+      <AdminEndPageHeader
+        title="Редагування обʼєкта"
         backUrl={ADMIN_PAGES.RECORDS(year, section)}
       />
-      <EditRecord />
+      <EditRecordWidget />
     </div>
-  )
+  );
 }

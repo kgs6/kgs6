@@ -1,4 +1,4 @@
-import {Table, TableBody, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {YearDTO} from "@/entities/year";
 import {YearTableRow} from "@/features/year/year-list/years-table";
 
@@ -19,9 +19,18 @@ export default function YearsTable({years}: YearsTableProps) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {years.map((yearItem, index) => (
-            <YearTableRow key={index} year={yearItem}/>
-          ))}
+          {years && years.length > 0 ? (
+            years.map((item) => <YearTableRow key={item.id} year={item} />)
+          ) : (
+            <TableRow>
+              <TableCell
+                colSpan={4}
+                className="text-center text-muted-foreground h-24"
+              >
+                Нічого не знайдено
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>

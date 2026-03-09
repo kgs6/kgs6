@@ -1,56 +1,60 @@
+"use client";
+
 import DatePicker from "@/components/shared/date-picker";
 import { FieldGroup, Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useParams } from "next/navigation";
 import { Controller } from "react-hook-form";
 import { CreateRecordFormValues, useCreateRecordForm } from "../model/schema";
 import toast from "react-hot-toast";
 import { getErrorMessage } from "@/shared/lib/get-error-message";
 import { Button } from "@/components/ui/button";
 import { FileItem } from "@/entities/file/model/types";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import FileUploader from "@/components/shared/file-uploader";
-import { useEditRecordMutation, useGetRecordByIdQuery } from "@/entities/record/api/record-admin-api";
+import { useEditRecordMutation } from "@/entities/record/api/record-admin-api";
 import { Loader } from "lucide-react";
+import RecordAdminDTO from "@/entities/record/model/types";
 
-export default function EditRecord() {
-  const { id } = useParams() as { id: string }
-  const [files, setFiles] = useState<FileItem[]>([]);
-  const [initialFiles, setInitialFiles] = useState<FileItem[]>([]);
-  const form = useCreateRecordForm();
+interface EditRecordProps {
+  record: RecordAdminDTO;
+}
+
+export default function EditRecord({ record }: EditRecordProps) {
+
+  const initialFilesFromRecord: FileItem[] =
+    record.attachments?.map((att) => ({
+      id: att.id,
+      url: att.url,
+      name: att.fileName,
+      size: att.fileSize,
+      type: att.type,
+      orderNo: att.orderNo,
+    })) ?? [];
+
+  const [initialFiles, setInitialFiles] =
+    useState<FileItem[]>(initialFilesFromRecord);
+
+  const [files, setFiles] = useState<FileItem[]>(initialFilesFromRecord);
+
+  const form = useCreateRecordForm(
+    record.title,
+    record.description,
+    record.publishedAt
+  );
+
   const { isDirty } = form.formState;
-  const { data: defaultRecord, isLoading: recordIsLoading } = useGetRecordByIdQuery(id);
-  const [updateRecord, { isLoading: updateIsLoading }] = useEditRecordMutation();
 
-  useEffect(() => {
-    if (defaultRecord) {
-      form.reset({
-        title: defaultRecord.title,
-        description: defaultRecord.description,
-        publishedAt: defaultRecord.publishedAt,
-      });
+  const [updateRecord, { isLoading }] = useEditRecordMutation();
 
-      const initialFiles = defaultRecord.attachments?.map(att => ({
-        id: att.id,
-        url: att.url,
-        name: att.fileName,
-        size: att.fileSize,
-        type: att.type,
-        orderNo: att.orderNo,
-      })) ?? [];
+  const isFilesDirty = useMemo(() => {
+    if (files.length !== initialFiles.length) return true;
 
-      setFiles(initialFiles);
-      setInitialFiles(initialFiles);
-    }
-  }, [defaultRecord, form]);
-
-  const isFilesDirty =
-    files.length !== initialFiles.length ||
-    files.some((file, index) => {
+    return files.some((file, index) => {
       if (file.file) return true;
       return file.id !== initialFiles[index]?.id;
     });
+  }, [files, initialFiles]);
 
   const canSave = isDirty || isFilesDirty;
 
@@ -58,88 +62,99 @@ export default function EditRecord() {
     try {
 
       const formData = new FormData();
+
       formData.append("title", data.title);
       formData.append("description", data.description || "");
-      if (data.publishedAt) formData.append("date", data.publishedAt);
 
-      files.forEach((file: FileItem) => {
+      if (data.publishedAt) {
+        formData.append("date", data.publishedAt);
+      }
+
+      files.forEach((file) => {
         if (file.file) {
           formData.append("files", file.file, file.name);
         } else if (file.id) {
-          formData.append("existingFiles", JSON.stringify({
-            id: file.id,
-            name: file.name,
-            url: file.url,
-            size: file.size,
-            type: file.type,
-            orderNo: file.orderNo,
-          }));
+          formData.append(
+            "existingFiles",
+            JSON.stringify({
+              id: file.id,
+              name: file.name,
+              url: file.url,
+              size: file.size,
+              type: file.type,
+              orderNo: file.orderNo,
+            })
+          );
         }
       });
 
-      // ! Change to edit record mutation 
-      await updateRecord({ id, data: formData }).unwrap();
+      await updateRecord({
+        id: record.id,
+        data: formData,
+      }).unwrap();
+
+      // обновляем baseline файлов
+      setInitialFiles(files);
+
       toast.success("Запис успішно оновлено");
-      // form.reset();
-    } catch (error: unknown) {
+
+    } catch (error) {
       const msg = getErrorMessage(error) || "Невідома помилка";
       toast.error(msg);
       console.error(msg, error);
     }
-  }
+  };
 
   return (
-    <div className={"w-full"}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
+    <div className="w-full">
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
+
           <Controller
-            name={"title"}
+            name="title"
             control={form.control}
             render={({ field, fieldState }) => (
-              <Field
-                data-invalid={fieldState.invalid}
-              >
+              <Field data-invalid={fieldState.invalid}>
                 <FieldLabel>Заголовок</FieldLabel>
                 <Input
                   {...field}
-                  // disabled={isLoading}
-                  placeholder={"Введіть..."}
+                  disabled={isLoading}
+                  placeholder="Введіть..."
                   aria-invalid={fieldState.invalid}
                 />
               </Field>
             )}
           />
+
           <Controller
-            name={"description"}
+            name="description"
             control={form.control}
             render={({ field, fieldState }) => (
-              <Field
-                data-invalid={fieldState.invalid}
-              >
+              <Field data-invalid={fieldState.invalid}>
                 <FieldLabel>Опис</FieldLabel>
                 <Textarea
                   {...field}
-                  // disabled={isLoading}
-                  placeholder={"Введіть..."}
-                  aria-invalid={fieldState.invalid}
+                  placeholder="Введіть..."
                   rows={6}
+                  aria-invalid={fieldState.invalid}
                 />
               </Field>
             )}
           />
+
           <Controller
-            name={"publishedAt"}
+            name="publishedAt"
             control={form.control}
             render={({ field }) => (
               <Field>
                 <FieldLabel>Дата публікації</FieldLabel>
                 <DatePicker
                   date={field.value ? new Date(field.value) : undefined}
-                  setDate={(newDate) => {
-                    field.onChange(newDate ? newDate.toISOString() : undefined);
-                  }}
+                  setDate={(newDate) =>
+                    field.onChange(
+                      newDate ? newDate.toISOString() : undefined
+                    )
+                  }
                 />
               </Field>
             )}
@@ -147,16 +162,17 @@ export default function EditRecord() {
 
           <FileUploader files={files} setFiles={setFiles} />
 
-          <div className={"w-full md:flex md:justify-end"}>
+          <div className="w-full md:flex md:justify-end">
             <Button
               type="submit"
-              disabled={updateIsLoading || recordIsLoading || !canSave}
-              className={"mt-4 w-full md:w-40"}
+              disabled={isLoading || !canSave}
+              className="mt-4 w-full md:w-40"
             >
-              {updateIsLoading || recordIsLoading && <Loader className="animate-spin" />}
+              {isLoading && <Loader className="animate-spin mr-2" />}
               Зберегти запис
             </Button>
           </div>
+
         </FieldGroup>
       </form>
     </div>

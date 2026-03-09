@@ -1,40 +1,40 @@
 'use client';
 
-import { useGetObjectByIdQuery } from '@/entities/object/api/object-admin-api';
-import { EditObject, EditObjectSkeleton } from '@/features/object/edit-object';
+import { useGetRecordByIdQuery } from '@/entities/record/api/record-admin-api';
+import { EditRecord } from '@/features/record/create-record';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function EditObjectWidget() {
   const params = useParams();
-  const obejctId = params.id as string;
-  const { data: object, isLoading } = useGetObjectByIdQuery(obejctId);
+  const id = params.id as string;
+  const { data: record, isLoading } = useGetRecordByIdQuery(id);
   const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
-    if (!isLoading && object) {
+    if (!isLoading && record) {
       const timeout = setTimeout(() => setShowContent(true), 50);
       return () => clearTimeout(timeout);
     }
-  }, [isLoading, object]);
+  }, [isLoading, record]);
 
   return (
-    <div >
+    <div className="mt-4">
       <div
         className={`transition-opacity duration-500 ${
-          showContent ? 'opacity-0 pointer-events-none hidden' : 'opacity-100'
+          showContent ? 'opacity-0 pointer-events-none' : 'opacity-100'
         }`}
       >
-        <EditObjectSkeleton />
+
       </div>
 
-      {object && (
+      {record && (
         <div
-          className={`mt-4 transition-opacity duration-500 top-0 left-0 w-full ${
+          className={`transition-opacity duration-500 top-0 left-0 w-full mb-4 ${
             showContent ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <EditObject object={object} />
+          <EditRecord record={record} />
         </div>
       )}
     </div>

@@ -23,7 +23,7 @@ interface RecordTableRowProps {
 
 export default function RecordTableRow({ record, allowReorder }: RecordTableRowProps) {
   const {year, section} = useParams() as { year: string, section: string };
-  const [ toggleActive ] = useToggleRecordActiveMutation();
+  const [ toggleActive, {isLoading: isToggleLoading} ] = useToggleRecordActiveMutation();
   const [ deleteRecord ] = useDeleteRecordMutation();
   const { setNodeRef, attributes, listeners, transform, transition } = useSortable({
     id: record.id,
@@ -86,6 +86,7 @@ export default function RecordTableRow({ record, allowReorder }: RecordTableRowP
             isActive={record.isActive}
             handleToggleActive={handleToggleActive}
             isIconOnly
+            isLoading={isToggleLoading}
           />
           <Link href={ADMIN_PAGES.EDIT_RECORD(year, section, record.id)} >
             <Button size="icon">

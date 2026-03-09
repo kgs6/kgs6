@@ -3,7 +3,7 @@ import {Skeleton} from "@/components/ui/skeleton";
 
 export default function AdminTableSkeleton() {
   return (
-    <div className="border rounded-lg overflow-hidden">
+    <div className="border mt-4 rounded-lg overflow-hidden">
       <Table>
         <TableHeader>
           <TableRow>

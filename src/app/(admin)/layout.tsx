@@ -4,7 +4,6 @@ import { AuthBootstrap } from '@/components/shared/auth-boostrap';
 import { AppSidebar } from '@/components/sidebar/app-sidebar';
 import { SiteHeader } from '@/components/sidebar/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from "framer-motion";
 
 
@@ -13,7 +12,6 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
   return (
     <div className="[--header-height:calc(--spacing(14))]">
       <AuthBootstrap />
@@ -33,7 +31,6 @@ export default function DashboardLayout({
               <div className="flex flex-col gap-4 p-4 md:gap-6 md:py-6">
                 <AnimatePresence mode="wait">
                   <motion.div
-                    key={pathname}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3 }}

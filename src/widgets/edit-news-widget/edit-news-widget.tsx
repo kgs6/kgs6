@@ -25,10 +25,10 @@ export default function EditNewsWidget() {
   }, [isLoadingNews, news]);
 
   return (
-    <div className="relative">
+    <div>
       <div
         className={`transition-opacity duration-500 ${
-          showContent ? 'opacity-0 pointer-events-none' : 'opacity-100'
+          showContent ? 'opacity-0 pointer-events-none hidden' : 'opacity-100'
         }`}
       >
         <EditNewsSkeleton />
@@ -36,7 +36,7 @@ export default function EditNewsWidget() {
 
       {news && (
         <div
-          className={`transition-opacity duration-500 absolute top-0 left-0 w-full ${
+          className={`transition-opacity mt-4 duration-500 top-0 left-0 w-full ${
             showContent ? 'opacity-100' : 'opacity-0'
           }`}
         >
