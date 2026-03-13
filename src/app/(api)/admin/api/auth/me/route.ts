@@ -1,6 +1,6 @@
 import { prisma } from "@/shared/lib/prisma";
 import { cookies } from "next/headers";
-import { verifyAccess } from "@/shared/lib/jwt"; // сделай/используй свою verifyAccess
+import { AccessPayload, verifyAccess } from "@/shared/lib/jwt"; // сделай/используй свою verifyAccess
 
 export async function GET() {
   const cookieStore = await cookies();
@@ -13,7 +13,7 @@ export async function GET() {
   let payload: { sub: string; email?: string; role?: string };
 
   try {
-    payload = verifyAccess(accessToken) as any;
+    payload = verifyAccess(accessToken) as AccessPayload;
   } catch {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -29,6 +29,7 @@ export async function GET() {
       id: true,
       email: true,
       name: true,
+      role: true
     },
   });
 

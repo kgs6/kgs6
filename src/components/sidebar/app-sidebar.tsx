@@ -1,8 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { BookOpen, Newspaper, Hotel, Settings } from 'lucide-react';
-
+import { BookOpen, Newspaper, Hotel, Settings, User } from 'lucide-react';
 import { NavMain } from '@/components/sidebar/nav-main';
 import { NavUser } from '@/components/sidebar/nav-user';
 import {
@@ -19,7 +18,6 @@ import { useGetYearQuery } from '@/entities/year/api/year-admin-api';
 import { NavSecondary } from './nav-secondary';
 import Image from 'next/image';
 import { useGetSettingsQuery } from '@/entities/settings/api/settings-admin-api';
-
 
 const navData = {
   navMain: [
@@ -39,6 +37,11 @@ const navData = {
       icon: BookOpen,
       items: [] as { title: string; url: string }[],
     },
+    {
+      title: 'Користувачі',
+      url: ADMIN_PAGES.USERS,
+      icon: User,
+    }
   ],
   navSecondary: [
     {
@@ -52,22 +55,32 @@ const navData = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const user = useAppSelector((state) => state.auth.user);
 
-  const { data } = useGetYearQuery();
+  const { data: years } = useGetYearQuery();
   const { data: settings } = useGetSettingsQuery();
 
-  React.useEffect(() => {
-    if (data) {
-      navData.navMain[2].items = data.map((y) => ({
-        title: String(y.year),
-        url: `/dashboard/year/${y.year}/section`,
-      }));
-    }
-  }, [data]);
+  const navigation = React.useMemo(() => {
+    const baseNav = [
+      { title: 'Новини', url: ADMIN_PAGES.NEWS, icon: Newspaper },
+      { title: 'Обʼєкти', url: ADMIN_PAGES.OBJECTS, icon: Hotel },
+      {
+        title: 'Інформація для акціонерів',
+        url: ADMIN_PAGES.YEARS,
+        icon: BookOpen,
+        items: years?.map((y) => ({
+          title: String(y.year),
+          url: `/dashboard/year/${y.year}/section`,
+        })) || [],
+      },
+      { title: 'Користувачі', url: ADMIN_PAGES.USERS, icon: User }
+    ];
+
+    return baseNav;
+  }, [years]);
 
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        {settings && (
+        {settings ? (
           <SidebarMenu>
             <SidebarMenuItem>
               <a
@@ -86,14 +99,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               </a>
             </SidebarMenuItem>
           </SidebarMenu>
+        ) : (
+          <div className='h-6'/>
         )}
       </SidebarHeader>
 
       <SidebarContent className="flex flex-col justify-between">
-        <NavMain items={navData.navMain} />
+        <NavMain items={navigation} />
         <NavSecondary items={navData.navSecondary} />
       </SidebarContent>
-      <SidebarFooter>{user ? <NavUser user={user} /> : null}</SidebarFooter>
+      <SidebarFooter>{user ? <NavUser user={user} /> : <div className='h-12'/>}</SidebarFooter>
     </Sidebar>
   );
 }

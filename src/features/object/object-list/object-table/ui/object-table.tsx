@@ -17,7 +17,7 @@ export default function ObjectTable({ objects }: ObjectTableProps) {
             <TableHead className={"text-start w-16 truncate"}>Зображення</TableHead>
             <TableHead className={"text-start min-w-36 truncate"}>Назва</TableHead>
             <TableHead className={"text-start w-28"}>Статус</TableHead>
-            <TableHead className={"w-36 text-start"}>Дії</TableHead>
+            <TableHead className={"text-start w-36"}>Дії</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

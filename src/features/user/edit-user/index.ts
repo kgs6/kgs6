@@ -1,0 +1,1 @@
+export {default as EditUser} from "./ui/edit-user"

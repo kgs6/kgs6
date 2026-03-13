@@ -24,3 +24,13 @@ export function verifyAccess(token: string) {
 export function verifyRefresh(token: string) {
   return jwt.verify(token, REFRESH_SECRET) as RefreshPayload;
 }
+
+export function decodeToken<T>(token: string): T | null {
+  return jwt.decode(token) as T;
+}
+
+export function isAdmin(token: string | undefined): boolean {
+  if (!token) return false;
+  const payload = verifyAccess(token);
+  return payload?.role === "ADMIN";
+}

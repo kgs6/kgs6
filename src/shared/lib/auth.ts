@@ -14,3 +14,17 @@ export async function isAuthenticated(): Promise<boolean> {
     return false;
   }
 }
+
+export async function isAdmin(): Promise<boolean> {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
+
+  if (!accessToken) return false;
+
+  try {
+    const payload = verifyAccess(accessToken);
+    return payload.role === "ADMIN";
+  } catch {
+    return false;
+  }
+}

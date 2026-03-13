@@ -21,13 +21,26 @@ import {
 } from "@/components/ui/sidebar"
 import { ModeToggle } from "../theme-toggle"
 import { UserDTO } from "@/entities/user"
+import { useLogoutMutation } from "@/entities/user/api/user-api"
+import { useRouter } from "next/navigation"
 
 export function NavUser({
   user,
 }: {
   user?: UserDTO
 }) {
+  const router = useRouter()
   const { isMobile } = useSidebar()
+  const [logout] = useLogoutMutation()
+
+  async function handleLogout() {
+    try {
+      await logout().unwrap()
+      router.push("/login")
+    } catch (error) {
+      console.error("Logout failed:", error)
+    }
+  }
 
   return (
     <SidebarMenu>
@@ -63,7 +76,7 @@ export function NavUser({
             <ModeToggle />
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleLogout()}>
               <LogOut />
               Log out
             </DropdownMenuItem>

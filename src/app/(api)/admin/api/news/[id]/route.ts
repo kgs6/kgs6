@@ -7,7 +7,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   if (!(await isAuthenticated()))
-    return  Response.json({message: "Помилка автентифікації"}, {status: 401});
+    return Response.json({message: "Помилка автентифікації"}, {status: 401});
 
   const { id } = await params;
 

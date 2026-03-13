@@ -24,6 +24,8 @@ export const ADMIN_PAGES = {
   CREATE_OBJECTS: "/dashboard/objects/create",
   EDIT_OBJECTS: (id: string) => `/dashboard/objects/edit/${id}`,
 
+  USERS: "/dashboard/users",
+
 
   // ? Site settings
   SETTINGS: "/dashboard/settings",

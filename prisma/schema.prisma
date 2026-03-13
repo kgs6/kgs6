@@ -60,6 +60,7 @@ model User {
   email         String         @unique
   name          String?
   password      String
+  oauthOnly     Boolean        @default(false)
   role          Role           @default(USER)
   createdAt     DateTime       @default(now())
   refreshTokens RefreshToken[]
