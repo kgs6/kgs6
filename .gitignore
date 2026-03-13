@@ -59,5 +59,6 @@ next-env.d.ts
 /.idea/
 /uploads
 
+/.next.config
 
 /kgs.txt
