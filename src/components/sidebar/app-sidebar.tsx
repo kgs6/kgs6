@@ -36,11 +36,6 @@ const navData = {
       url: ADMIN_PAGES.YEARS,
       icon: BookOpen,
       items: [] as { title: string; url: string }[],
-    },
-    {
-      title: 'Користувачі',
-      url: ADMIN_PAGES.USERS,
-      icon: User,
     }
   ],
   navSecondary: [
@@ -71,7 +66,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           url: `/dashboard/year/${y.year}/section`,
         })) || [],
       },
-      { title: 'Користувачі', url: ADMIN_PAGES.USERS, icon: User }
     ];
 
     return baseNav;
