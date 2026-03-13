@@ -5,7 +5,7 @@ import path from "path";
 import { defineConfig } from "prisma/config";
 import { config } from "dotenv";
 
-const envFile = process.env.NODE_ENV === 'production' ? '.env.prod' : '.env.local';
+const envFile = ".env.docker";
 
 config({ path: path.resolve(process.cwd(), envFile) });
 
