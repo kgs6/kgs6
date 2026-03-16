@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Environment setup
 
-## Getting Started
+Create .env file with with this example structure
+```
+NEXT_PUBLIC_APP_NAME="app"
+NEXT_PUBLIC_UPLOADS_URL="https://domin.com"
+NEXT_PUBLIC_APP_URL="https://domin.com"
 
-First, run the development server:
+BASE_ADMIN_EMAIL="admin@mail.com"
+BASE_ADMIN_PASSWORD="superStrongPassword"
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+POSTGRES_USER="[dbUser]"
+POSTGRES_PASSWORD="[password]"
+DATABASE_URL="postgresql://[dbUser]:[password]@[host]/[dbName]?schema=public"
+
+JWT_ACCESS_SECRET="[secret jwt string]"
+JWT_REFRESH_SECRET="[secret jwt string]"
+
+ACCESS_TOKEN_TTL=
+REFRESH_TOKEN_TTL=
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# Database setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```npx prisma generate```
 
-## Learn More
+```npx prisma db push```
 
-To learn more about Next.js, take a look at the following resources:
+Seed database with prepared data
+```npx dotenv -e .env npx tsx prisma/seed.ts```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Run application
+Build project
+```npx next build```
 
-## Deploy on Vercel
+Start application
+```PORT=3100 npx next start```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Run application (via server.js)
+Check ```next.config.ts``` in root directory
+```
+const nextConfig: NextConfig = {
+  output: 'standalone', // It`s must containt this field
+};
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+Build project
+```npx next build```
+
+Copy static file in standalone directory
+```
+cp -r .next/static .next/standalone/.next/static
+cp -r public .next/standalone/public
+```
+
+Start application
+```PORT=3100 node .next/standalone/server.js```

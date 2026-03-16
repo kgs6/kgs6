@@ -6,7 +6,7 @@ export type RefreshPayload = { sub: string; tid: string };
 const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET as Secret;
 const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET as Secret;
 
-const ACCESS_TTL = (process.env.ACCESS_TOKEN_TTL ?? "15m") as SignOptions["expiresIn"];
+const ACCESS_TTL = (process.env.ACCESS_TOKEN_TTL ?? "30s") as SignOptions["expiresIn"];
 const REFRESH_TTL = (process.env.REFRESH_TOKEN_TTL ?? "7d") as SignOptions["expiresIn"];
 
 export function signAccess(payload: AccessPayload) {

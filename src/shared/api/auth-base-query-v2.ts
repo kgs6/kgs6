@@ -5,12 +5,8 @@ const rawBaseQueryV2 = fetchBaseQuery({
   credentials: "include",
 });
 
-let refreshPromise: Promise<ReturnType<typeof rawBaseQueryV2>> | null = null;
-
-interface ExtraOptionsWithRetry {
-  _retry?: boolean;
-  [key: string]: unknown;
-}
+// Храним промис рефреша вне функции
+let refreshPromise: Promise<any> | null = null;
 
 export const baseQueryWithReauthV2: BaseQueryFn<
   string | FetchArgs,
@@ -18,44 +14,51 @@ export const baseQueryWithReauthV2: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   const url = typeof args === "string" ? args : args.url;
+  
+  // 1. Выполняем основной запрос
   let result = await rawBaseQueryV2(args, api, extraOptions);
 
-  if (url?.includes("/auth/refresh-token")) return result;
+  // Не пытаемся рефрешить, если это сам запрос рефреша или логина
+  if (url?.includes("/auth/refresh-token") || url?.includes("/auth/login")) {
+    return result;
+  }
 
-  // Если 401
+  // 2. Если получили 401 (Unauthorized)
   if (result.error?.status === 401) {
-    const alreadyRetried = (extraOptions as ExtraOptionsWithRetry)?._retry;
-    if (alreadyRetried) {
-      if (typeof window !== "undefined") {
-        window.location.href = "/login";
-      }
-      return result;
+    
+    // Если мы уже пытались рефрешнуть этот конкретный запрос (защита от зацикливания)
+    if ((extraOptions as any)?._retry) {
+      return result; 
     }
-
-    const retryExtraOptions: ExtraOptionsWithRetry = { ...(extraOptions as ExtraOptionsWithRetry), _retry: true };
 
     if (!refreshPromise) {
       refreshPromise = (async () => {
-        try {
-          return await rawBaseQueryV2({ url: "/auth/refresh-token", method: "POST" }, api, retryExtraOptions);
-        } finally {
-          refreshPromise = null;
-        }
+        const refreshResult = await rawBaseQueryV2(
+          { url: "/auth/refresh-token", method: "POST" },
+          api,
+          extraOptions
+        );
+
+        // Даем небольшую паузу (200мс) перед очисткой, чтобы все "стоящие в очереди" 
+        // запросы успели получить результат этого промиса
+        setTimeout(() => { refreshPromise = null; }, 200);
+
+        return refreshResult;
       })();
     }
 
     const refreshResult = await refreshPromise;
 
     if (!refreshResult.error) {
-      result = await rawBaseQueryV2(args, api, retryExtraOptions);
-      if (result.error?.status === 401 && typeof window !== "undefined") {
-        window.location.href = "/login"; // редирект если снова 401
-      }
+      // 3. Рефреш успешен! Повторяем исходный запрос с флагом _retry
+      result = await rawBaseQueryV2(args, api, { ...extraOptions, _retry: true });
     } else {
+      // 4. Рефреш реально сдох (или его нет в куках)
       if (typeof window !== "undefined") {
+        // Очищаем стор (опционально) и редиректим
+        // api.dispatch(logoutAction()); 
         window.location.href = "/login";
       }
-      return refreshResult;
     }
   }
 

@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     user: { id: user.id, email: user.email, name: user.name, role: user.role },
   });
 
-  res.headers.append('Set-Cookie', cookie('accessToken', accessToken, 15 * 60));
+  res.headers.append('Set-Cookie', cookie('accessToken', accessToken, 7 * 24 * 60 * 60));
   res.headers.append(
     'Set-Cookie',
     cookie('refreshToken', refreshToken, 7 * 24 * 60 * 60),

@@ -13,6 +13,7 @@ import { LucideIcon, User } from "lucide-react"
 import { useAppSelector } from "@/store/hooks"
 import { ADMIN_PAGES } from "@/shared/config/pages.config"
 import { useMemo } from "react"
+import Link from "next/link"
 
 
 export function NavSecondary({
@@ -51,10 +52,10 @@ export function NavSecondary({
           {menuItems.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild>
-                <a href={item.url}>
+                <Link href={item.url}>
                   <item.icon />
                   <span>{item.title}</span>
-                </a>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}

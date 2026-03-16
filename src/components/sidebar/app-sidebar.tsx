@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { BookOpen, Newspaper, Hotel, Settings, User } from 'lucide-react';
+import { BookOpen, Newspaper, Hotel, Settings } from 'lucide-react';
 import { NavMain } from '@/components/sidebar/nav-main';
 import { NavUser } from '@/components/sidebar/nav-user';
 import {
@@ -18,6 +18,7 @@ import { useGetYearQuery } from '@/entities/year/api/year-admin-api';
 import { NavSecondary } from './nav-secondary';
 import Image from 'next/image';
 import { useGetSettingsQuery } from '@/entities/settings/api/settings-admin-api';
+import Link from 'next/link';
 
 const navData = {
   navMain: [
@@ -77,7 +78,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {settings ? (
           <SidebarMenu>
             <SidebarMenuItem>
-              <a
+              <Link
                 href={ADMIN_PAGES.DASHBOARD}
                 className="flex items-center gap-2"
               >
@@ -90,7 +91,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <span className="text-base font-semibold truncate">
                   {settings.companyName}
                 </span>
-              </a>
+              </Link>
             </SidebarMenuItem>
           </SidebarMenu>
         ) : (
