@@ -12,10 +12,10 @@ export default function YearsTable({years}: YearsTableProps) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className={"text-start min-w-16"}>Рік</TableHead>
+            <TableHead className={"text-start w-full"}>Рік</TableHead>
             <TableHead className={"text-start w-28"}>Розділи</TableHead>
-            <TableHead className={"text-start w-28"}>Статус</TableHead>
-            <TableHead className={"w-36 text-start"}>Дії</TableHead>
+            <TableHead className={"w-12 md:w-auto text-start"}>Статус</TableHead>
+            <TableHead className={"w-12 md:w-40 text-start"}>Дії</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

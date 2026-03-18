@@ -7,12 +7,13 @@ import {getErrorMessage} from "@/shared/lib/get-error-message";
 import toast from "react-hot-toast";
 import VisibilityButton from "@/components/shared/visibility-button";
 import {Button} from "@/components/ui/button";
-import {Pencil} from "lucide-react";
+import {Eye, EyeOff, MoreHorizontalIcon, Pencil} from "lucide-react";
 import {ADMIN_PAGES} from "@/shared/config/pages.config";
 import {useIsMobile} from "@/hooks/use-mobile";
 import {YearDTO} from "@/entities/year";
 import Link from "next/link";
 import {useDeleteYearMutation, useToggleYearActiveMutation} from "@/entities/year/api/year-admin-api";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 interface YearsTableRowProps {
   year: YearDTO
@@ -58,26 +59,66 @@ export default function YearsTableRow({year}: YearsTableRowProps) {
         <ActivityStatus isActive={year.isActive}/>
       </TableCell>
       <TableCell className="flex gap-2">
-        <VisibilityButton
-          isActive={year.isActive}
-          handleToggleActive={handleToggleActive}
-          isIconOnly={true}
-          isLoading={isToggleLoading}
-        />
-        <Link href={ADMIN_PAGES.SECTIONS(year.year.toString())}>
-          <Button
-            size={isMobile ? "icon-lg" : "icon"}
-          >
-            <Pencil className="h-4 w-4"/>
-          </Button>
-        </Link>
-        <DeletionAlert
-          alertTitle={`Ви впевнені, що хочете видалити новину "${year.year}"?`}
-          alertDescription={"Ця дія не може бути скасована."}
-          isDeleting={isLoading}
-          onDelete={handleDelete}
-          isIconButton={true}
-        />
+       {isMobile ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="size-8">
+                <MoreHorizontalIcon />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <Link href={ADMIN_PAGES.SECTIONS(year.year.toString())}>
+                <DropdownMenuItem>
+                  <Pencil className="me-2" />
+                  Редагувати
+                </DropdownMenuItem>
+              </Link>
+              <DropdownMenuItem onClick={handleToggleActive}>
+                {year.isActive ? (
+                  <>
+                    <EyeOff className="me-2" />
+                    Приховати
+                  </>
+                ) : (
+                  <>
+                    <Eye className="me-2" />
+                    Відобразити
+                  </>
+                )}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive" asChild>
+                <DeletionAlert
+                  onDelete={handleDelete}
+                  alertTitle="Видалити запис?"
+                  alertDescription="Ця дія видалить запис та всі пов'язані файли без можливості відновлення."
+                />
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <div className="flex items-center justify-center gap-2">
+            <VisibilityButton
+              isActive={year.isActive}
+              handleToggleActive={handleToggleActive}
+              isIconOnly
+              isLoading={isToggleLoading}
+            />
+            <Link href={ADMIN_PAGES.SECTIONS(year.year.toString())}>
+              <Button size="icon">
+                <Pencil className="h-4 w-4" />
+              </Button>
+            </Link>
+            <DeletionAlert
+              onDelete={handleDelete}
+              isIconButton
+              alertTitle="Видалити запис?"
+              isDeleting={isLoading}
+              alertDescription="Ця дія видалить запис та всі пов'язані файли без можливості відновлення."
+            />
+          </div>
+        )}
       </TableCell>
     </TableRow>
   )
