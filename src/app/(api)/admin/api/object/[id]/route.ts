@@ -149,9 +149,8 @@ export async function PUT(
        1️⃣ Новый файл
     ========================== */
     if (isNewFileProvided) {
-      // Удаляем старый файл
       if (currentObject.image?.url) {
-        const oldPath = join(process.cwd(), 'public', currentObject.image.url);
+        const oldPath = join(`${process.env.NEXT_PUBLIC_UPLOADS_URL}`, 'uploads', 'images', currentObject.image.url);
 
         try {
           await unlink(oldPath);
@@ -167,7 +166,7 @@ export async function PUT(
       const uniqueFileName = `${uuidv4()}-${imageFile.name}`;
 
       // Новая директория для хранения логотипов
-      const uploadDir = join(process.cwd(), 'uploads', 'images');
+      const uploadDir = join(`${process.env.NEXT_PUBLIC_UPLOADS_URL}`, 'uploads', 'images');
       await mkdir(uploadDir, { recursive: true });
 
       // Путь до файла

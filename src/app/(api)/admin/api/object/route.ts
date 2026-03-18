@@ -30,7 +30,7 @@ export async function POST(request: Request) {
       const uniqueFileName = `${uuidv4()}-${imageFile.name}`;
 
       // Новая директория для хранения логотипов
-      const uploadDir = join(process.cwd(), 'uploads', 'images');
+      const uploadDir = join(`${process.env.NEXT_PUBLIC_UPLOADS_URL}`, 'uploads' , 'images');
       await mkdir(uploadDir, { recursive: true });
 
       // Путь до файла

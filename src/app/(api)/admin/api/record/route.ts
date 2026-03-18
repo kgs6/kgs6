@@ -62,7 +62,7 @@ export async function POST(req: Request) {
 
     const attachmentsData = [];
 
-    const uploadDir = path.join(process.cwd(), 'uploads', 'files');
+    const uploadDir = path.join(`${process.env.NEXT_PUBLIC_UPLOADS_URL}`, 'uploads', 'files');
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }

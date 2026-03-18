@@ -23,7 +23,7 @@ export const baseQueryWithReauthV2: BaseQueryFn<
   string | FetchArgs,
   unknown,
   FetchBaseQueryError,
-  CustomExtraOptions // Добавляем типизацию сюда
+  CustomExtraOptions
 > = async (args, api, extraOptions = {}) => {
   const url = typeof args === 'string' ? args : args.url;
 
