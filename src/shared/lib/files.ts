@@ -49,7 +49,7 @@ export async function syncEntryFiles(
   }
 
   // * Directory like in your API
-  const uploadDir = path.join(process.cwd(), "uploads", "files");
+  const uploadDir = path.join(`${process.env.NEXT_PUBLIC_UPLOADS_URL}`, "uploads", "files");
 
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
