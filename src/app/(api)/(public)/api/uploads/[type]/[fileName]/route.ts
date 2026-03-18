@@ -15,7 +15,7 @@ export async function GET(
     return new NextResponse("Invalid type", { status: 400 });
   }
 
-  const filePath = path.join(process.cwd(), "uploads", type, fileName);
+  const filePath = path.join(`${process.env.NEXT_PUBLIC_UPLOADS_URL}`, "uploads", type, fileName);
 
   if (!fs.existsSync(filePath)) {
     return new NextResponse("Not Found", { status: 404 });
