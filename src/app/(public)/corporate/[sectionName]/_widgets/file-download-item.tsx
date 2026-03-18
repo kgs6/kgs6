@@ -8,7 +8,6 @@ interface FileDownloadItemProps {
   file: AttachmentDto;
 }
 
-// Конфігурація типів для зручного масштабування
 const FILE_TYPE_CONFIG: Record<string, { label: string; classes: string }> = {
   pdf: { label: "PDF", classes: "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300" },
   xml: { label: "XML", classes: "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300" },
