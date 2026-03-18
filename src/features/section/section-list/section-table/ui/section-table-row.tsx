@@ -5,7 +5,7 @@ import VisibilityButton from "@/components/shared/visibility-button";
 import Link from "next/link";
 import { ADMIN_PAGES } from "@/shared/config/pages.config";
 import { Button } from "@/components/ui/button";
-import { GripVertical, Pencil } from "lucide-react";
+import { Eye, EyeOff, GripVertical, MoreHorizontalIcon, Pencil } from "lucide-react";
 import DeletionAlert from "@/components/shared/deletion-alert";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useSortable } from "@dnd-kit/sortable";
@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 import { getErrorMessage } from "@/shared/lib/get-error-message";
 import { useDeleteSectionMutation, useToggleSectionActiveMutation } from "@/entities/section/api/section-admin-api";
 import { useParams } from "next/navigation";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 
 interface SectionTableRowProps {
@@ -30,7 +31,6 @@ export default function SectionTableRow({ section, allowReorder }: SectionTableR
   });
   const [toggleSectionActive, {isLoading: isToggleLoading}] = useToggleSectionActiveMutation();
   const [deleteSection] = useDeleteSectionMutation();
-
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -105,28 +105,66 @@ export default function SectionTableRow({ section, allowReorder }: SectionTableR
         <ActivityStatus isActive={section.isActive} />
       </TableCell>
 
-      <TableCell className="text-center w-36">
-        <div className="flex items-center justify-center gap-4 md:gap-2">
-          <VisibilityButton
-            isActive={section.isActive}
-            handleToggleActive={() => handleToggleActive()}
-            isIconOnly
-            isLoading={isToggleLoading}
-          />
-          <Link href={ADMIN_PAGES.RECORDS(year, section.name)} >
-            <Button
-              size={isMobile ? "icon-lg" : "icon"}
-            >
-              <Pencil className="h-4 w-4" />
-            </Button>
-          </Link>
-          <DeletionAlert
-            onDelete={() => handleDeleteSection()}
-            isIconButton
-            alertTitle={"Ви впевнені, що хочете видалити цей розділ?"}
-            alertDescription={"Ця дія не може бути скасована. Це назавжди видалить розділ з наших серверів."}
-          />
-        </div>
+      <TableCell className="text-center w-40">
+        {isMobile ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="size-8">
+                <MoreHorizontalIcon />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <Link href={ADMIN_PAGES.RECORDS(year, section.name)}>
+                <DropdownMenuItem>
+                  <Pencil className="me-2" />
+                  Редагувати
+                </DropdownMenuItem>
+              </Link>
+              <DropdownMenuItem onClick={handleToggleActive}>
+                {section.isActive ? (
+                  <>
+                    <EyeOff className="me-2" />
+                    Приховати
+                  </>
+                ) : (
+                  <>
+                    <Eye className="me-2" />
+                    Відобразити
+                  </>
+                )}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive" asChild>
+                <DeletionAlert
+                  onDelete={handleDeleteSection}
+                  alertTitle="Видалити запис?"
+                  alertDescription="Ця дія видалить запис та всі пов'язані файли без можливості відновлення."
+                />
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <div className="flex items-center justify-center gap-2">
+            <VisibilityButton
+              isActive={section.isActive}
+              handleToggleActive={handleToggleActive}
+              isIconOnly
+              isLoading={isToggleLoading}
+            />
+            <Link href={ADMIN_PAGES.RECORDS(year, section.name)}>
+              <Button size="icon">
+                <Pencil className="h-4 w-4" />
+              </Button>
+            </Link>
+            <DeletionAlert
+              onDelete={handleDeleteSection}
+              isIconButton
+              alertTitle="Видалити запис?"
+              alertDescription="Ця дія видалить запис та всі пов'язані файли без можливості відновлення."
+            />
+          </div>
+        )}
       </TableCell>
     </TableRow>
   )

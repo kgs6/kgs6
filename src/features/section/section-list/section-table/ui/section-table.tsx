@@ -62,14 +62,14 @@ export default function SectionTable({sections, allowReorder}: SectionTableProps
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <SortableContext items={items.map(s => s.id)} strategy={verticalListSortingStrategy}>
         <div className={"border rounded-lg overflow-hidden"}>
-          <Table>
+          <Table className="table-fixed w-full">
             <TableHeader>
               <TableRow>
                 <TableHead className="w-12 text-center">#</TableHead>
                 <TableHead>Назва розділу</TableHead>
                 <TableHead>Записів</TableHead>
-                <TableHead className="text-center w-28">Статус</TableHead>
-                <TableHead className="text-center w-36">Дії</TableHead>
+                <TableHead className="text-center w-12 md:w-auto">Статус</TableHead>
+                <TableHead className="text-center w-12 md:w-40">Дії</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

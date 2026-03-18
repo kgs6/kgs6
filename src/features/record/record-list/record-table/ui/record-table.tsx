@@ -26,7 +26,6 @@ import toast from 'react-hot-toast';
 import RecordTableRow from './record-table-row';
 import { useReorderRecordMutation } from '@/entities/record/api/record-admin-api';
 import { getErrorMessage } from '@/shared/lib/get-error-message';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 interface RecordTableProps {
   records: RecordDTO[];
@@ -39,7 +38,6 @@ export default function RecordTable({
 }: RecordTableProps) {
   const [items, setItems] = useState<RecordDTO[]>(records);
   const [updateRecordsOrder] = useReorderRecordMutation();
-  const isMobile = useIsMobile();
 
   useEffect(() => {
     setItems(records);
@@ -87,7 +85,7 @@ export default function RecordTable({
         strategy={verticalListSortingStrategy}
       >
         <div className="border rounded-lg overflow-hidden bg-card">
-          <Table className="table-fixed wfull">
+          <Table className="table-fixed w-full">
             <TableHeader>
               <TableRow>
                 <TableHead className="w-10 text-center">#</TableHead>

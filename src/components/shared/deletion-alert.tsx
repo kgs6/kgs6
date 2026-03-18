@@ -38,7 +38,7 @@ const DeletionAlert = ({
             <Trash size={16}/>
           </Button>
         ) : (
-          <Button variant="destructive" className="gap-2 bg-background text-destructive" >
+          <Button variant="destructive" className="gap-2 bg-transparent text-destructive dark:bg-transparent" >
             <Trash2 className="h-4 w-4"/>
             Видалити
           </Button>
