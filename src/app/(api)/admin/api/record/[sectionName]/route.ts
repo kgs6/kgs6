@@ -21,6 +21,7 @@ export async function GET(
         title: true,
         orderNo: true,
         isActive: true,
+        publishedAt: true,
       },
       orderBy: { orderNo: "asc" },
     });

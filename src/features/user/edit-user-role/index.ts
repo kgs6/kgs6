@@ -1,0 +1,1 @@
+export {default as EditUserRole} from "./ui/edit-user-role";
