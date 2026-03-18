@@ -3,16 +3,11 @@
 import AllowUserOauthBadge from "@/components/shared/allow-google-oauth";
 import DeletionAlert from "@/components/shared/deletion-alert";
 import UserRoleBadge from "@/components/shared/user-role-badge";
-import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { useDeleteUserMutation } from "@/entities/user/api/user-api";
 import { UserAdminDTO } from "@/entities/user/model/types"
-import { EditUser } from "@/features/user/edit-user";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { ADMIN_PAGES } from "@/shared/config/pages.config";
+import { EditUserRole } from "@/features/user/edit-user-role";
 import { getErrorMessage } from "@/shared/lib/get-error-message";
-import {  Pencil } from "lucide-react";
-import Link from "next/link";
 import toast from "react-hot-toast";
 
 interface UserTableRowProps {
@@ -20,7 +15,6 @@ interface UserTableRowProps {
 }
 
 export default function UserTableRow({user}: UserTableRowProps) {
-  const isMobile = useIsMobile();
   const [deleteUser, {isLoading: isDeletingUser}] = useDeleteUserMutation();
 
 
@@ -55,7 +49,7 @@ export default function UserTableRow({user}: UserTableRowProps) {
       </TableCell>
       
       <TableCell>
-        <UserRoleBadge role={user.role} />
+        <EditUserRole userId={user.id} currentRole={user.role} />
       </TableCell>
       
       <TableCell>
@@ -64,7 +58,6 @@ export default function UserTableRow({user}: UserTableRowProps) {
 
       <TableCell>
         <div className="flex items-center justify-end gap-4 md:gap-2">
-          <EditUser user={user}/>
           <DeletionAlert
             onDelete={() => handleDeleteSection()}
             isIconButton

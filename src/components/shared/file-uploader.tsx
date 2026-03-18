@@ -26,7 +26,7 @@ interface FileUploaderProps {
   setFiles: (files: FileItem[]) => void;
 }
 
-const ALLOWED_EXTENSIONS = [".pdf", ".doc", ".docx", ".xml", ".p7s"];
+const ALLOWED_EXTENSIONS = [".pdf", ".doc", ".docx", ".xml", ".p7s", ".zip"];
 
 export default function FileUploader({files, setFiles}: FileUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
@@ -125,14 +125,14 @@ export default function FileUploader({files, setFiles}: FileUploaderProps) {
         <Upload className="mx-auto mb-4 opacity-70" size={28}/>
 
         <p className="text-sm text-muted-foreground mb-4">
-          Перетягніть файли сюди або оберіть їх вручну<br/>(.pdf, .doc, .docx, .xml, .p7s)
+          Перетягніть файли сюди або оберіть їх вручну<br/>(.pdf, .doc, .docx, .xml, .p7s, .zip)
         </p>
 
         <label>
           <input
             ref={inputRef}
             type="file"
-            accept=".pdf,.doc,.docx,.xml,.p7s"
+            accept=".pdf,.doc,.docx,.xml,.p7s,.zip"
             multiple
             onChange={handleUpload}
             className="hidden"

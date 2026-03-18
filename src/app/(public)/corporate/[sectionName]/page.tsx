@@ -22,29 +22,6 @@ export default function StockInfoPage() {
   const { data: yearData, isLoading: isContentLoading } =
     useGetYearByNumberQuery(parseInt(yearFromPath));
 
-  // const [activeOrder, setActiveOrderNo] = useState<number>(1);
-
-  // useEffect(() => {
-  //   if (!yearData?.sections) return;
-
-  //   const observer = new IntersectionObserver(
-  //     (entries) => {
-  //       entries.forEach((entry) => {
-  //         if (entry.isIntersecting) {
-  //           const id = entry.target.id.replace('section-', '');
-  //           setActiveOrderNo(parseInt(id));
-  //         }
-  //       });
-  //     },
-  //     {rootMargin: "-20% 0% -70% 0%", threshold: 0}
-  //   );
-
-  //   const elements = document.querySelectorAll('section[id^="section-"]');
-  //   elements.forEach((el) => observer.observe(el));
-
-  //   return () => observer.disconnect();
-  // }, [yearData]);
-
   if (isListLoading)
     return <div className="p-10 text-center">Завантаження...</div>;
 
@@ -98,16 +75,6 @@ export default function StockInfoPage() {
             )}
           </PageAnimatePresence>
         </main>
-
-        {/* <aside className="hidden sm:block md:col-span-1 mt-26">
-          <div className="sticky top-24">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-4">Зміст</h3>
-            <SectionNavigation
-              sections={yearData?.sections || []}
-              activeOrderNo={activeOrderNo}
-            />
-          </div>
-        </aside> */}
       </div>
       <Footer />
     </div>

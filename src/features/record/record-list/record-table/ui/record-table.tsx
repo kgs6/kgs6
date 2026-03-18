@@ -1,20 +1,45 @@
-import { TableHeader, TableRow, TableHead, TableBody, TableCell, Table } from "@/components/ui/table";
-import { RecordDTO } from "@/entities/record";
-import { DragEndEvent, useSensors, useSensor, PointerSensor, TouchSensor, DndContext, closestCenter } from "@dnd-kit/core";
-import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import RecordTableRow from "./record-table-row";
-import { useReorderRecordMutation } from "@/entities/record/api/record-admin-api";
+import {
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+  Table,
+} from '@/components/ui/table';
+import { RecordDTO } from '@/entities/record';
+import {
+  DragEndEvent,
+  useSensors,
+  useSensor,
+  PointerSensor,
+  TouchSensor,
+  DndContext,
+  closestCenter,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import RecordTableRow from './record-table-row';
+import { useReorderRecordMutation } from '@/entities/record/api/record-admin-api';
+import { getErrorMessage } from '@/shared/lib/get-error-message';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface RecordTableProps {
-  records: RecordDTO[]
+  records: RecordDTO[];
   allowReorder: boolean;
 }
 
-export default function RecordTable({ records, allowReorder }: RecordTableProps) {
+export default function RecordTable({
+  records,
+  allowReorder,
+}: RecordTableProps) {
   const [items, setItems] = useState<RecordDTO[]>(records);
   const [updateRecordsOrder] = useReorderRecordMutation();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     setItems(records);
@@ -22,7 +47,9 @@ export default function RecordTable({ records, allowReorder }: RecordTableProps)
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } })
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 150, tolerance: 5 },
+    }),
   );
 
   const handleDragEnd = async (event: DragEndEvent) => {
@@ -35,33 +62,48 @@ export default function RecordTable({ records, allowReorder }: RecordTableProps)
     const newItems = arrayMove(items, oldIndex, newIndex);
 
     setItems(newItems);
-    const orderArray = newItems.map((r, index) => ({ id: r.id, orderNo: index + 1 }));
+    const orderArray = newItems.map((r, index) => ({
+      id: r.id,
+      orderNo: index + 1,
+    }));
 
     try {
       await updateRecordsOrder(orderArray).unwrap();
-      toast.success("Порядок записів оновлено");
-    } catch (error) {
-      toast.error("Помилка оновлення порядку");
+      toast.success('Порядок записів оновлено');
+    } catch (error: unknown) {
+      const msg = getErrorMessage(error);
+      toast.error(msg || 'Помилка при оновленні порядку записів');
     }
   };
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <SortableContext items={items.map((r) => r.id)} strategy={verticalListSortingStrategy}>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+    >
+      <SortableContext
+        items={items.map((r) => r.id)}
+        strategy={verticalListSortingStrategy}
+      >
         <div className="border rounded-lg overflow-hidden bg-card">
-          <Table>
+          <Table className="table-fixed wfull">
             <TableHeader>
               <TableRow>
-                <TableHead className="w-12 text-center">#</TableHead>
-                <TableHead>Назва запису</TableHead>
-                <TableHead className="text-center w-28">Статус</TableHead>
-                <TableHead className="text-center w-36">Дії</TableHead>
+                <TableHead className="w-10 text-center">#</TableHead>
+                <TableHead className="w-22">Дата</TableHead>
+                <TableHead className='min-w-22'>Назва запису</TableHead>
+                <TableHead className="w-12 md:w-auto text-center">Статус</TableHead>
+                <TableHead className="w-12 md:w-40 text-center">Дії</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {items.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground h-24">
+                  <TableCell
+                    colSpan={4}
+                    className="text-center text-muted-foreground h-24"
+                  >
                     Записів не знайдено
                   </TableCell>
                 </TableRow>
@@ -79,5 +121,5 @@ export default function RecordTable({ records, allowReorder }: RecordTableProps)
         </div>
       </SortableContext>
     </DndContext>
-  )
+  );
 }

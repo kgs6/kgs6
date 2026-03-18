@@ -15,10 +15,10 @@ export default function UserTable({users}: UserTableProps) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className={"text-start w-36 truncate"}>Імʼя</TableHead>
-            <TableHead className={"text-start min-w-36 truncate"}>Пошта</TableHead>
-            <TableHead className={"text-start w-28"}>Роль</TableHead>
-            <TableHead className={"text-start"}>Google OAuth</TableHead>
+            <TableHead className={"text-start min-w-36 truncate"}>Імʼя</TableHead>
+            <TableHead className={"text-start min-w-full truncate"}>Пошта</TableHead>
+            <TableHead className={"text-start min-w-56"}>Роль</TableHead>
+            <TableHead className={"text-start min-w-56"}>Google OAuth</TableHead>
             <TableHead className={"text-start w-36"}>Дії</TableHead>
           </TableRow>
         </TableHeader>

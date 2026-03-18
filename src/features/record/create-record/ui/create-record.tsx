@@ -2,7 +2,7 @@ import DatePicker from "@/components/shared/date-picker";
 import { FieldGroup, Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Controller } from "react-hook-form";
 import { CreateRecordFormValues, useCreateRecordForm } from "../model/schema";
 import toast from "react-hot-toast";
@@ -12,13 +12,16 @@ import { FileItem } from "@/entities/file/model/types";
 import { useState } from "react";
 import FileUploader from "@/components/shared/file-uploader";
 import { useCreateRecordMutation } from "@/entities/record/api/record-admin-api";
+import { ADMIN_PAGES } from "@/shared/config/pages.config";
+import { Loader } from "lucide-react";
 
 
 export default function CreateRecord() {
-  const { section } = useParams() as { section: string }
+  const { year, section } = useParams() as { year: string; section: string };
   const [files, setFiles] = useState<FileItem[]>([]);
   const form = useCreateRecordForm("", "", "");
-  const [createRecord] = useCreateRecordMutation();
+  const [createRecord, {isLoading}] = useCreateRecordMutation();
+  const router = useRouter();
 
   const onSubmit = async (data: CreateRecordFormValues) => {
     try {
@@ -45,6 +48,7 @@ export default function CreateRecord() {
 
       await createRecord(formData).unwrap();
       toast.success("Запис успішно створений");
+      router.push(ADMIN_PAGES.RECORDS(year, section));
       // form.reset();
     } catch (error: unknown) {
       const msg = getErrorMessage(error) || "Невідома помилка";
@@ -114,7 +118,7 @@ export default function CreateRecord() {
 
           <div className={"w-full md:flex md:justify-end"}>
             <Button type="submit" className={"mt-4 w-full md:w-auto"}>
-              {/* {isLoading && <Loader/>} */}
+              {isLoading && <Loader className="animate-spin"/>}
               Створити
             </Button>
           </div>

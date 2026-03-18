@@ -10,6 +10,7 @@ export interface RecordDTO {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  publishedAt: string;
 }
 
 export default interface RecordAdminDTO {
