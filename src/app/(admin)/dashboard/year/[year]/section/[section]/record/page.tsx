@@ -12,7 +12,7 @@ export default function Page() {
   return (
     <div>
       <AdminPageHeader 
-        title="Записи"
+        title={`${year}: Записи`}
         backUrl={ADMIN_PAGES.SECTIONS(year)}
         forwardAction={{
           url: ADMIN_PAGES.CREATE_RECORD(year, section),
