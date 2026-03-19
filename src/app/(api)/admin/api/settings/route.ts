@@ -60,12 +60,10 @@ export async function PATCH(request: Request) {
 
     let imageUrl: string | undefined = undefined;
 
-    // ===== Обработка логотипа =====
     if (logo instanceof File) {
       const bytes = await logo.arrayBuffer();
       const buffer = Buffer.from(bytes);
 
-      // сохраняем в uploads/logo, не в public
       const uploadDir = join(`${process.env.NEXT_PUBLIC_UPLOADS_URL}`, 'uploads', 'logo');
       await mkdir(uploadDir, { recursive: true });
 
@@ -74,14 +72,11 @@ export async function PATCH(request: Request) {
 
       await writeFile(filePath, buffer);
 
-      // путь, который будет использоваться на фронте через API route
       imageUrl = `/api/uploads/logo/${fileName}`;
     } else if (typeof logo === 'string') {
-      // если пустая строка пришла — обнуляем путь
       if (logo === '') {
         imageUrl = '';
       }
-      // иначе undefined — значит не обновляем
     }
 
     const settings = await prisma.siteSettings.findFirst();
@@ -89,10 +84,8 @@ export async function PATCH(request: Request) {
       return Response.json('Налаштування не знайдені', { status: 404 });
     }
 
-    // ===== Собираем объект для обновления только с реально пришедшими ключами =====
     const dataToUpdate: Record<string, string | File> = {};
 
-    // Проверяем каждый ключ: если есть в formData — добавляем в update
     const keys = [
       'companyName',
       'description',
@@ -110,7 +103,6 @@ export async function PATCH(request: Request) {
       }
     });
 
-    // Логотип добавляем только если есть
     if (imageUrl !== undefined) {
       dataToUpdate.imageUrl = imageUrl;
     }

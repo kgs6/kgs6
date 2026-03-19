@@ -13,7 +13,7 @@ const FILE_TYPE_CONFIG: Record<string, { label: string; classes: string }> = {
   xml: { label: "XML", classes: "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300" },
   doc: { label: "DOC", classes: "bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300" },
   docx: { label: "DOCX", classes: "bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300" },
-  txt: { label: "TXT", classes: "bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300" },
+  zip: { label: "ZIP", classes: "bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300" },
   default: { label: "UNK", classes: "bg-gray-50 text-gray-700 dark:bg-gray-950 dark:text-gray-300" }
 };
 

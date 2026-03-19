@@ -24,7 +24,7 @@ export default function FileBadges({ type, isSigned }: FileBadgesProps) {
             typeClasses = "bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300";
             label = "DOCX";
             break;
-        case "txt":
+        case "zip":
             typeClasses = "bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300";
             break;
         default:

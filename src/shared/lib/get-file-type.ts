@@ -27,8 +27,8 @@ export function getFileType(fileName: string): { type: string; isSigned: boolean
     case "docx":
       type = "docx";
       break;
-    case "txt":
-      type = "txt";
+    case "zip":
+      type = "zip";
       break;
     default:
       type = "unknown";

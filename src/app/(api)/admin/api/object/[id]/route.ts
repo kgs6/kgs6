@@ -145,9 +145,9 @@ export async function PUT(
 
     let imageUpdateData = undefined;
 
-    /* =========================
-       1️⃣ Новый файл
-    ========================== */
+    // ? =========================
+    // ?   1️⃣ Новый файл
+    // ? =========================
     if (isNewFileProvided) {
       if (currentObject.image?.url) {
         const oldPath = join(`${process.env.NEXT_PUBLIC_UPLOADS_URL}`, 'uploads', 'images', currentObject.image.url);
@@ -162,17 +162,13 @@ export async function PUT(
       const bytes = await imageFile.arrayBuffer();
       const buffer = Buffer.from(bytes);
 
-      // Генерируем уникальное имя файла
       const uniqueFileName = `${uuidv4()}-${imageFile.name}`;
 
-      // Новая директория для хранения логотипов
       const uploadDir = join(`${process.env.NEXT_PUBLIC_UPLOADS_URL}`, 'uploads', 'images');
       await mkdir(uploadDir, { recursive: true });
 
-      // Путь до файла
       const filePath = join(uploadDir, uniqueFileName);
 
-      // Сохраняем файл
       await writeFile(filePath, buffer);
 
       imageUpdateData = {
@@ -193,9 +189,9 @@ export async function PUT(
       };
     }
 
-    /* =========================
-       2️⃣ Удаление по флагу
-    ========================== */
+    // ? =========================
+    // ?  2️⃣ Delete by flag
+    // ? ========================== 
     if (removeImage && currentObject.image) {
       if (currentObject.image.url) {
         const oldPath = join(process.cwd(), 'public', currentObject.image.url);
@@ -214,9 +210,6 @@ export async function PUT(
       };
     }
 
-    /* =========================
-       3️⃣ Обновление
-    ========================== */
     const updatedObject = await prisma.object.update({
       where: { id },
       data: {
