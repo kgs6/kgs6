@@ -66,7 +66,7 @@ export async function PATCH(request: Request) {
       const buffer = Buffer.from(bytes);
 
       // сохраняем в uploads/logo, не в public
-      const uploadDir = join(process.cwd(), 'uploads', 'logo');
+      const uploadDir = join(`${process.env.NEXT_PUBLIC_UPLOADS_URL}`, 'uploads', 'logo');
       await mkdir(uploadDir, { recursive: true });
 
       const fileName = `${Date.now()}-${logo.name}`;
