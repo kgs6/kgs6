@@ -1,6 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { auth } from "@/app/auth" // Твой конфиг NextAuth
-import { cookie } from '@/shared/lib/cookie'
+import { NextRequest, NextResponse } from 'next/server';
 
 const allowedOrigins = [
   'http://localhost:3000', 
@@ -20,14 +18,7 @@ export async function proxy(request: NextRequest) {
   const origin = headers.get('origin') ?? '';
   const isAllowedOrigin = allowedOrigins.includes(origin);
 
-  const session = await auth();
-
   const response = NextResponse.next();
-
-  if (session?.accessToken && session?.refreshToken) {
-    response.headers.append('Set-Cookie', cookie('accessToken', session.accessToken, 7 * 24 * 60 * 60));
-    response.headers.append('Set-Cookie', cookie('refreshToken', session.refreshToken, 7 * 24 * 60 * 60));
-  }
 
   if (nextUrl.pathname.startsWith('/api')) {
     const isPreflight = method === 'OPTIONS';

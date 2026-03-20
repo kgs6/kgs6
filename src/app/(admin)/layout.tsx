@@ -5,7 +5,6 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { PageAnimatePresence } from '@/components/shared/page-animate-presence';
-import { auth } from '../auth';
 
 export default async function DashboardLayout({
   children,
@@ -13,10 +12,9 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const cookieStore = await cookies();
-  const session = await auth();
   const token = cookieStore.get('accessToken')?.value;
 
-  if (!token && !session) {
+  if (!token) {
     redirect('/login');
   }
 
