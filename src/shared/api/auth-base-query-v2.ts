@@ -1,3 +1,4 @@
+import { Mutex } from 'async-mutex';
 import {
   BaseQueryFn,
   FetchArgs,
@@ -5,65 +6,54 @@ import {
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react';
 
-interface CustomExtraOptions {
-  _retry?: boolean;
-}
+const mutex = new Mutex();
 
 const rawBaseQueryV2 = fetchBaseQuery({
   baseUrl: `${process.env.NEXT_PUBLIC_APP_URL}/admin/api`,
   credentials: 'include',
 });
 
-let refreshPromise: Promise<{
-  data?: unknown;
-  error?: FetchBaseQueryError;
-}> | null = null;
-
 export const baseQueryWithReauthV2: BaseQueryFn<
   string | FetchArgs,
   unknown,
   FetchBaseQueryError,
-  CustomExtraOptions
+  { _retry?: boolean }
 > = async (args, api, extraOptions = {}) => {
-  const url = typeof args === 'string' ? args : args.url;
+  await mutex.waitForUnlock();
 
   let result = await rawBaseQueryV2(args, api, extraOptions);
 
-  if (url?.includes('/auth/refresh-token') || url?.includes('/auth/login')) {
-    return result;
-  }
+  if (result.error?.status === 401 && !extraOptions._retry) {
+    
+    if (!mutex.isLocked()) {
+      const release = await mutex.acquire();
+      
+      try {
+        const refreshResult = await rawBaseQueryV2(
+          { url: '/auth/refresh-token', method: 'POST' },
+          api,
+          extraOptions
+        );
 
-  if (result.error?.status === 401) {
-    if (extraOptions._retry) {
-      return result;
-    }
-
-    if (!refreshPromise) {
-      refreshPromise = (async () => {
-        try {
-          const refreshResult = await rawBaseQueryV2(
-            { url: '/auth/refresh-token', method: 'POST' },
-            api,
-            extraOptions,
-          );
-          return refreshResult;
-        } finally {
-          refreshPromise = null;
+        if (!refreshResult.error) {
+          result = await rawBaseQueryV2(args, api, {
+            ...extraOptions,
+            _retry: true,
+          });
+        } else {
+          if (typeof window !== 'undefined') {
+            window.location.href = '/login';
+          }
         }
-      })();
-    }
-
-    const refreshResult = await refreshPromise;
-
-    if (!refreshResult.error) {
+      } finally {
+        release();
+      }
+    } else {
+      await mutex.waitForUnlock();
       result = await rawBaseQueryV2(args, api, {
         ...extraOptions,
         _retry: true,
       });
-    } else {
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login';
-      }
     }
   }
 

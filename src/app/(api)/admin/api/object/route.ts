@@ -74,9 +74,8 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
-  if (!(await isAuthenticated())) {
+  if (!(await isAuthenticated()))
     return new Response('Помилка авторизації', { status: 401 });
-  }
 
   try {
     const objects = await prisma.object.findMany({
