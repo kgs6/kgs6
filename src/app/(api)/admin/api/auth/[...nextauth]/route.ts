@@ -1,4 +1,3 @@
-// src/app/admin/api/auth/[...nextauth]/route.ts
 import { handlers } from '@/app/auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { cookie } from '@/shared/lib/cookie';
@@ -13,21 +12,18 @@ export const GET = async (req: NextRequest) => {
   const response = await originalGet(req);
 
   if (req.nextUrl.pathname.includes('/callback/google')) {
-    // 1. Пытаемся достать сессионную куку прямо из ответа, который сгенерил Auth.js
     const allCookies = response.headers.getSetCookie();
     const sessionCookie = allCookies.find((c) =>
       c.includes('authjs.session-token'),
     );
 
-    // Вырезаем само значение токена
     const tokenValue = sessionCookie?.split(';')[0].split('=')[1];
 
     if (tokenValue) {
-      // 2. Расшифровываем JWT напрямую, не дожидаясь записи в браузер
       const decoded = await decode({
         token: tokenValue,
         secret: process.env.AUTH_SECRET!,
-        salt: 'authjs.session-token', // Стандартная соль Auth.js
+        salt: 'authjs.session-token',
       });
 
       if (decoded?.email) {
@@ -52,13 +48,11 @@ export const GET = async (req: NextRequest) => {
             },
           });
 
-          // 3. Создаем финальный редирект
           const redirectResponse = NextResponse.redirect(
             new URL('/dashboard', req.url),
           );
 
           console.log('✅ Delete NextAuth tokens');
-          // 4. Принудительно убиваем куки Auth.js, чтобы они не висели в браузере
           redirectResponse.cookies.delete('authjs.session-token');
           redirectResponse.cookies.delete('authjs.callback-url');
           redirectResponse.cookies.delete('authjs.csrf-token');
