@@ -13,9 +13,30 @@ import { LoginForm } from '@/features/user/login-form';
 import { PAGES } from '@/shared/config/pages.config';
 import Link from 'next/link';
 import { useGetPublicSettingsQuery } from '@/entities/settings/api/settings-public-api';
+import { GoogleSignIn } from '@/components/shared/google-sign-in';
+import { Separator } from '@/components/ui/separator';
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
+import toast from 'react-hot-toast';
 
 export default function LoginBlock() {
   const { data: settings } = useGetPublicSettingsQuery();
+  const searchParams = useSearchParams()
+  const error = searchParams.get('error')
+
+  useEffect(() => {
+    if (error) {
+      const errorMessages: Record<string, string> = {
+        AccessDenied: "Помилка входу",
+        Configuration: "Помилка конфігурації сервера авторизації.",
+        Default: "Сталося помилка при вході. Спробуйье пізнішє.",
+      }
+
+      const message = errorMessages[error] || errorMessages.Default
+
+      toast.error(message || "Помилка авторизації")
+    }
+  }, [error])
 
   return (
     <div className={cn('w-full flex flex-col gap-6')}>
@@ -43,6 +64,8 @@ export default function LoginBlock() {
 
         <CardContent>
           <LoginForm />
+          <Separator className='w-full mx-y'/>
+          <GoogleSignIn />
         </CardContent>
       </Card>
     </div>

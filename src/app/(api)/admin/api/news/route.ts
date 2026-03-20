@@ -2,7 +2,7 @@ import {isAuthenticated} from "@/shared/lib/auth";
 import {prisma} from "@/shared/lib/prisma";
 
 export async function GET() {
-  if (await !isAuthenticated())
+  if (!(await isAuthenticated()))
     return Response.json({error: "Помилка автентифікації"}, {status: 401});
 
   try {
