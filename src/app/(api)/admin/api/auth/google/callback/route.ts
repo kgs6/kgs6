@@ -45,7 +45,7 @@ export async function GET(req: NextRequest) {
 
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
-      const resError = NextResponse.redirect(new URL('/login?error=AccessDenied', req.url));
+      const resError = NextResponse.redirect(new URL(`${process.env.NEXT_PUBLIC_APP_URL}/login?error=AccessDenied`, req.url));
 
       return resError
     }
@@ -67,7 +67,7 @@ export async function GET(req: NextRequest) {
       data: { userId: user.id, tokenHash, expiresAt },
     });
 
-    const res = NextResponse.redirect(new URL('/dashboard', req.url));
+    const res = NextResponse.redirect(new URL(`${process.env.NEXT_PUBLIC_APP_URL}/dashboard`, req.url));
 
     res.headers.append(
       'Set-Cookie',
