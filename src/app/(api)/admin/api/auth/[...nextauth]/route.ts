@@ -4,7 +4,14 @@ import { cookie } from '@/shared/lib/cookie';
 import { prisma } from '@/shared/lib/prisma';
 import { signAccess, signRefresh } from '@/shared/lib/jwt';
 import { sha256 } from '@/shared/lib/tokenHash';
-import { decode } from 'next-auth/jwt'; // Потребуется для расшифровки токена напрямую
+import { decode } from 'next-auth/jwt';
+
+if (process.env.AUTH_URL && process.env.AUTH_URL.includes(',')) {
+  process.env.AUTH_URL = process.env.AUTH_URL.split(',')[0].trim();
+}
+if (process.env.NEXTAUTH_URL && process.env.NEXTAUTH_URL.includes(',')) {
+  process.env.NEXTAUTH_URL = process.env.NEXTAUTH_URL.split(',')[0].trim();
+}
 
 const originalGet = handlers.GET;
 
