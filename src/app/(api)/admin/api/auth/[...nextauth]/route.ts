@@ -55,8 +55,9 @@ export const GET = async (req: NextRequest) => {
             },
           });
 
-          const redirectResponse = NextResponse.redirect(
-            new URL('/dashboard', req.url),
+          const redirectResponse = NextResponse.json(
+            { error: 'Ok' },
+            { status: 200 },
           );
 
           console.log('✅ Delete NextAuth tokens');
