@@ -32,6 +32,7 @@ async function main() {
         name: "Super Admin",
         password: hashedPassword,
         role: "ADMIN",
+        oauthOnly: true,
       },
     });
 

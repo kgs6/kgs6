@@ -39,7 +39,11 @@ export function NavMain({
       <SidebarGroupLabel>Меню</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
-          <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
+          <Collapsible
+            key={item.title}
+            asChild
+            defaultOpen={item.isActive}
+          >
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip={item.title}>
                 <Link href={item.url}>
@@ -56,17 +60,19 @@ export function NavMain({
                     </SidebarMenuAction>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
-                    <SidebarMenuSub className="flex flex-col-reverse">
-                      {item.items?.map((subItem) => (
-                        <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton asChild>
-                            <Link href={subItem.url}>
-                              <span>{subItem.title}</span>
-                            </Link>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
+                    <div className="max-h-[calc(var(--sidebar-height)-100px)] overflow-y-auto">
+                      <SidebarMenuSub className="flex flex-col-reverse">
+                        {item.items?.map((subItem) => (
+                          <SidebarMenuSubItem key={subItem.title}>
+                            <SidebarMenuSubButton asChild>
+                              <Link href={subItem.url}>
+                                <span>{subItem.title}</span>
+                              </Link>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        ))}
+                      </SidebarMenuSub>
+                    </div>
                   </CollapsibleContent>
                 </>
               ) : null}
@@ -75,5 +81,6 @@ export function NavMain({
         ))}
       </SidebarMenu>
     </SidebarGroup>
-  )
+  );
 }
+
