@@ -1,105 +1,101 @@
-import DatePicker from "@/components/shared/date-picker";
-import { FieldGroup, Field, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useParams, useRouter } from "next/navigation";
-import { Controller } from "react-hook-form";
-import { CreateRecordFormValues, useCreateRecordForm } from "../model/schema";
-import toast from "react-hot-toast";
-import { getErrorMessage } from "@/shared/lib/get-error-message";
-import { Button } from "@/components/ui/button";
-import { FileItem } from "@/entities/file/model/types";
-import { useState } from "react";
-import FileUploader from "@/components/shared/file-uploader";
-import { useCreateRecordMutation } from "@/entities/record/api/record-admin-api";
-import { ADMIN_PAGES } from "@/shared/config/pages.config";
-import { Loader } from "lucide-react";
-
+import DatePicker from '@/components/shared/date-picker';
+import { FieldGroup, Field, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useParams, useRouter } from 'next/navigation';
+import { Controller } from 'react-hook-form';
+import { CreateRecordFormValues, useCreateRecordForm } from '../model/schema';
+import toast from 'react-hot-toast';
+import { getErrorMessage } from '@/shared/lib/get-error-message';
+import { Button } from '@/components/ui/button';
+import { FileItem } from '@/entities/file/model/types';
+import { useState } from 'react';
+import FileUploader from '@/components/shared/file-uploader';
+import { useCreateRecordMutation } from '@/entities/record/api/record-admin-api';
+import { ADMIN_PAGES } from '@/shared/config/pages.config';
+import { Loader } from 'lucide-react';
 
 export default function CreateRecord() {
   const { year, section } = useParams() as { year: string; section: string };
   const [files, setFiles] = useState<FileItem[]>([]);
-  const form = useCreateRecordForm("", "", "");
-  const [createRecord, {isLoading}] = useCreateRecordMutation();
+  const form = useCreateRecordForm('', '', '');
+  const [createRecord, { isLoading }] = useCreateRecordMutation();
   const router = useRouter();
 
   const onSubmit = async (data: CreateRecordFormValues) => {
     try {
       const formData = new FormData();
-      formData.append("sectionName", section);
-      formData.append("title", data.title);
-      formData.append("description", data.description || "");
-      if (data.publishedAt) formData.append("date", data.publishedAt);
+      formData.append('sectionName', section);
+      formData.append('title', data.title);
+      formData.append('description', data.description || '');
+      if (data.publishedAt) formData.append('date', data.publishedAt);
 
       files.forEach((file: FileItem) => {
         if (file.file) {
-          formData.append("files", file.file, file.name);
+          formData.append('files', file.file, file.name);
         } else if (file.id) {
-          formData.append("existingFiles", JSON.stringify({
-            id: file.id,
-            name: file.name,
-            url: file.url,
-            size: file.size,
-            type: file.type,
-            orderNo: file.orderNo,
-          }));
+          formData.append(
+            'existingFiles',
+            JSON.stringify({
+              id: file.id,
+              name: file.name,
+              url: file.url,
+              size: file.size,
+              type: file.type,
+              orderNo: file.orderNo,
+            }),
+          );
         }
       });
 
       await createRecord(formData).unwrap();
-      toast.success("Запис успішно створений");
+      toast.success('Запис успішно створений');
       router.push(ADMIN_PAGES.RECORDS(year, section));
       // form.reset();
     } catch (error: unknown) {
-      const msg = getErrorMessage(error) || "Невідома помилка";
+      const msg = getErrorMessage(error) || 'Невідома помилка';
       toast.error(msg);
       console.error(msg, error);
     }
-  }
+  };
 
   return (
-    <div className={"mt-4 w-full"}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
+    <div className={'mt-4 w-full'}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
           <Controller
-            name={"title"}
+            name={'title'}
             control={form.control}
             render={({ field, fieldState }) => (
-              <Field
-                data-invalid={fieldState.invalid}
-              >
+              <Field data-invalid={fieldState.invalid}>
                 <FieldLabel>Заголовок</FieldLabel>
                 <Input
                   {...field}
                   // disabled={isLoading}
-                  placeholder={"Введіть..."}
+                  placeholder={'Введіть...'}
                   aria-invalid={fieldState.invalid}
                 />
               </Field>
             )}
           />
-          <Controller
-            name={"description"}
+          {/* <Controller
+            name={'description'}
             control={form.control}
             render={({ field, fieldState }) => (
-              <Field
-                data-invalid={fieldState.invalid}
-              >
+              <Field data-invalid={fieldState.invalid}>
                 <FieldLabel>Опис</FieldLabel>
                 <Textarea
                   {...field}
                   disabled
-                  placeholder={"Введіть..."}
+                  placeholder={'Введіть...'}
                   aria-invalid={fieldState.invalid}
                   rows={6}
                 />
               </Field>
             )}
-          />
+          /> */}
           <Controller
-            name={"publishedAt"}
+            name={'publishedAt'}
             control={form.control}
             render={({ field }) => (
               <Field>
@@ -116,9 +112,9 @@ export default function CreateRecord() {
 
           <FileUploader files={files} setFiles={setFiles} />
 
-          <div className={"w-full md:flex md:justify-end"}>
-            <Button type="submit" className={"mt-4 w-full md:w-auto"}>
-              {isLoading && <Loader className="animate-spin"/>}
+          <div className={'w-full md:flex md:justify-end'}>
+            <Button type="submit" className={'mt-4 w-full md:w-auto'}>
+              {isLoading && <Loader className="animate-spin" />}
               Створити
             </Button>
           </div>
