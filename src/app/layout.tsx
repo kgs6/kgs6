@@ -4,17 +4,46 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { Providers } from "./providers";
 import { ThemeProvider } from "@/components/theme-provider";
+import { SettingsPublicDTO } from "@/entities/settings";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
   subsets: ["latin"],
 });
 
+async function getSiteSettings(): Promise<SettingsPublicDTO | null> {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/settings`,
+      {
+        next: { revalidate: 3600 }, 
+      }
+    );
 
-export const metadata: Metadata = {
-  title: "Офіційний інтернет-сайт",
-  description: "Офіційний інтернет-сайт",
-};
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const siteSettings: SettingsPublicDTO = await response.json();
+    return siteSettings;
+  } catch (error) {
+    console.error('Error fetching site settings:', error);
+    return null;
+  }
+}
+
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  
+  return {
+    title: `Офіційний інтернет-сайт ${settings?.companyName}`,
+    description: `Офіційний інтернет-сайт ${settings?.companyName}`,
+    icons: {
+      icon: `${process.env.NEXT_PUBLIC_APP_URL}${settings?.imageUrl}`
+    }
+  };
+}
 
 export default function RootLayout({
   children,

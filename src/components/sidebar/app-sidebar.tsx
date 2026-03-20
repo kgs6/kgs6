@@ -62,6 +62,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         title: 'Інформація для акціонерів',
         url: ADMIN_PAGES.YEARS,
         icon: BookOpen,
+        isActive: Boolean(years?.length),
         items: years?.map((y) => ({
           title: String(y.year),
           url: `/dashboard/year/${y.year}/section`,
@@ -84,10 +85,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               >
                 {settings.imageUrl && (
                   <div>
-                    <Image src={`${settings.imageUrl.toString()}`} alt="Logo" width={32} height={32} />
+                    <Image
+                      src={`${settings.imageUrl.toString()}`}
+                      alt="Logo"
+                      width={32}
+                      height={32}
+                    />
                   </div>
                 )}
-
                 <span className="text-base font-semibold truncate">
                   {settings.companyName}
                 </span>
@@ -95,7 +100,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenuItem>
           </SidebarMenu>
         ) : (
-          <div className='h-6'/>
+          <div className="h-6" />
         )}
       </SidebarHeader>
 
@@ -103,7 +108,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={navigation} />
         <NavSecondary items={navData.navSecondary} />
       </SidebarContent>
-      <SidebarFooter>{user ? <NavUser user={user} /> : <div className='h-12'/>}</SidebarFooter>
+      <SidebarFooter>
+        {user ? <NavUser user={user} /> : <div className="h-12" />}
+      </SidebarFooter>
     </Sidebar>
   );
 }
+
