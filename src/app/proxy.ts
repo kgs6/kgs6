@@ -4,7 +4,9 @@ import { cookie } from '@/shared/lib/cookie'
 
 const allowedOrigins = [
   'http://localhost:3000', 
-  'http://10.64.54.36:3000'
+  'http://10.64.54.36:3000',
+  'https://test2.cig.ua',
+  'https://google.com',
 ]
 
 const corsOptions = {
