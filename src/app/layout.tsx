@@ -16,7 +16,7 @@ async function getSiteSettings(): Promise<SettingsPublicDTO | null> {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_APP_URL}/api/settings`,
       {
-        next: { revalidate: 3600 }, 
+        next: { revalidate: 86400 }, 
       }
     );
 
@@ -35,13 +35,29 @@ async function getSiteSettings(): Promise<SettingsPublicDTO | null> {
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
+  const baseUrl = new URL(`${process.env.NEXT_PUBLIC_APP_URL}`)
   
   return {
     title: `Офіційний інтернет-сайт ${settings?.companyName}`,
     description: `Офіційний інтернет-сайт ${settings?.companyName}`,
+    metadataBase: baseUrl,
     icons: {
-      icon: `${process.env.NEXT_PUBLIC_APP_URL}${settings?.imageUrl}`
-    }
+      icon: `${baseUrl}${settings?.imageUrl}`
+    },
+     alternates: {
+      canonical: baseUrl.toString(),
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
   };
 }
 
